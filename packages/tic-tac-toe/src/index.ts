@@ -12,6 +12,10 @@ const grid = [
   [0, 0, 0], // y 2
 ];
 
+export const initGame = () => {
+  return { grid, previousPlayer: 0, msg: "Waiting for the first move." };
+};
+
 export const playerMove = (player: Player, { x, y }: Coordinates) => {
   try {
     setMark(player, { x, y });

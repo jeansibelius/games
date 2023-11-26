@@ -4,20 +4,25 @@ const grid = [
     [0, 0, 0], // y 1
     [0, 0, 0], // y 2
 ];
+export const initGame = () => {
+    return { grid, previousPlayer: 0, msg: "Waiting for the first move." };
+};
 export const playerMove = (player, { x, y }) => {
     try {
         setMark(player, { x, y });
         if (hasWinningPosition()) {
-            return `Winner: ${player}`;
+            return { grid, previousPlayer: player, msg: `Winner: ${player}.` };
         }
         else if (isGridFull()) {
-            return "Game over";
+            return { grid, previousPlayer: player, msg: "Tie. Game over." };
         }
         console.log(grid);
-        return { grid, player };
+        return { grid, previousPlayer: player, msg: "Next move." };
     }
     catch (e) {
         console.error(e);
+        if (e instanceof Error)
+            return { grid, previousPlayer: player, msg: `Error: ${e.message}` };
     }
 };
 const setMark = (player, { x, y }) => {

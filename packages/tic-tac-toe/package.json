@@ -7,7 +7,7 @@
   "author": "Rafael Linnankoski",
   "license": "MIT",
   "main": "dist/index.js",
-  "types": "dist/index.d.mts",
+  "types": "dist/index.d.ts",
   "scripts": {
     "lint": "eslint .",
     "test": "vitest --coverage",
