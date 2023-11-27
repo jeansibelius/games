@@ -1,0 +1,5 @@
+{
+  "watch": ["./**/*.ts"],
+  "ignore": ["./**/*.test.ts"],
+  "exec": "ts-node-esm ./src/index.ts"
+}

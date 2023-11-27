@@ -1,0 +1,5 @@
+{
+  "watch": ["./**/*.ts"],
+  "ignore": ["packages/**/*.test.ts"],
+  "exec": "ts-node-esm ./packages/cli/src/index.ts"
+}

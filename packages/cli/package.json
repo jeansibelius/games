@@ -1,14 +1,16 @@
 {
-  "name": "games",
+  "name": "games-cli",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
   "type": "module",
   "scripts": {
     "lint": "eslint .",
     "test": "vitest --coverage",
-    "dev:cli": "nodemon ./packages/cli/src/index.ts",
-    "start:cli": "ts-node-esm ./packages/cli/src/index.ts"
+    "build": "tsc",
+    "dev": "nodemon ./src/index.ts",
+    "start": "ts-node-esm ./src/index.ts"
   },
   "keywords": [],
   "author": "Rafael Linnankoski",
@@ -23,5 +25,9 @@
     "ts-node": "^10.9.1",
     "typescript": "^5.3.2",
     "vitest": "^0.34.6"
+  },
+  "dependencies": {
+    "@inquirer/prompts": "^3.3.0",
+    "picocolors": "^1.0.0"
   }
 }
