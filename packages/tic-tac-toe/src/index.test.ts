@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, test } from "vitest";
+import { beforeAll, beforeEach, describe, expect, test } from "vitest";
 import { initGame, playerMove } from "./index.js";
 
 describe("Playing tic-tac-toe", () => {
@@ -85,6 +85,67 @@ describe("Playing tic-tac-toe", () => {
       test("a helpful error message is returned", () => {
         expect(followingMsg).toContain("Choose another position");
       });
+    });
+  });
+
+  const winningScenarios = [
+    {
+      gridToPrepare: [
+        [1, 0, 0],
+        [1, 0, 0],
+        [0, 0, 0],
+      ],
+      nextMove: { x: 0, y: 2 },
+    },
+    {
+      gridToPrepare: [
+        [1, 0, 0],
+        [0, 1, 0],
+        [0, 0, 0],
+      ],
+      nextMove: { x: 2, y: 2 },
+    },
+    {
+      gridToPrepare: [
+        [1, 1, 0],
+        [0, 0, 0],
+        [0, 0, 0],
+      ],
+      nextMove: { x: 2, y: 0 },
+    },
+    {
+      gridToPrepare: [
+        [0, 0, 1],
+        [0, 1, 0],
+        [0, 0, 0],
+      ],
+      nextMove: { x: 0, y: 2 },
+    },
+  ];
+  describe.each(winningScenarios)("when a player makes a winning move", ({ gridToPrepare, nextMove }) => {
+    const currentPlayer = 1;
+    let grid: number[][];
+    let msg: string;
+    beforeAll(() => {
+      initGame();
+      gridToPrepare.forEach((row, y) => {
+        row.forEach((cell, x) => {
+          cell === 1 && playerMove(currentPlayer, { x, y });
+        });
+      });
+      const { grid: newGrid, msg: newMsg } = playerMove(currentPlayer, nextMove);
+      grid = newGrid;
+      msg = newMsg;
+    });
+
+    test("the grid with the winning move is returned", () => {
+      const gridAfterMove = gridToPrepare;
+      gridAfterMove[nextMove.y][nextMove.x] = currentPlayer;
+      expect(grid).toStrictEqual(gridAfterMove);
+    });
+
+    test("a message is shown", () => {
+      expect(msg).toContain("Winner");
     });
   });
 });
