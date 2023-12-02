@@ -44,6 +44,9 @@ importers:
       picocolors:
         specifier: ^1.0.0
         version: 1.0.0
+      tic-tac-toe:
+        specifier: workspace:*
+        version: link:../tic-tac-toe
     devDependencies:
       '@types/node':
         specifier: ^20.10.0
