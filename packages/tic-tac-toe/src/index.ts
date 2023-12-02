@@ -5,6 +5,12 @@ type Coordinates = {
   y: number;
 };
 
+interface GameResponse {
+  grid: typeof grid;
+  previousPlayer: Player;
+  msg: string;
+}
+
 const initGrid = () => [
   // x 0, 1, 2
   [0, 0, 0], // y 0
@@ -62,3 +68,5 @@ const hasWinningPosition = () => {
 const isGridFull = () => {
   return !grid.flat().includes(0);
 };
+
+const createResponse = (msg: string): GameResponse => ({ grid, previousPlayer: latestPlayer, msg });
