@@ -57,5 +57,34 @@ describe("Playing tic-tac-toe", () => {
     test("a message is shown", () => {
       expect(msg).toBeTruthy();
     });
+
+    describe("if one tries to overwrite an existing move", () => {
+      const currentPlayer = 2;
+      let followingGrid: number[][];
+      let followingPreviousPlayer: number;
+      let followingMsg: string;
+      beforeEach(() => {
+        const {
+          grid: newGrid,
+          previousPlayer: newPreviousPlayer,
+          msg: newMsg,
+        } = playerMove(currentPlayer, { x: 0, y: 0 });
+        followingGrid = newGrid;
+        followingPreviousPlayer = newPreviousPlayer;
+        followingMsg = newMsg;
+      });
+
+      test("the grid is returned unchaged", () => {
+        expect(followingGrid).toStrictEqual(grid);
+      });
+
+      test("the previous player value is NOT set to the latest one", () => {
+        expect(followingPreviousPlayer).toBe(previousPlayer);
+      });
+
+      test("a helpful error message is returned", () => {
+        expect(followingMsg).toContain("Choose another position");
+      });
+    });
   });
 });
