@@ -13,9 +13,9 @@ describe("Playing tic-tac-toe", () => {
       expect(grid).toStrictEqual(initGrid);
     });
 
-    test("the previous player value is 0", () => {
+    test("the previous player value is 1", () => {
       const { previousPlayer } = initGame();
-      expect(previousPlayer).toBe(0);
+      expect(previousPlayer).toBe(1);
     });
 
     test("a message is shown", () => {
