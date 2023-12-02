@@ -14,6 +14,7 @@ const initGrid = () => [
 
 // Game state
 let grid: number[][];
+let latestPlayer: number = NaN;
 
 export const initGame = () => {
   grid = initGrid();
@@ -23,16 +24,17 @@ export const initGame = () => {
 export const playerMove = (player: Player, { x, y }: Coordinates) => {
   try {
     setMoveToGrid(player, { x, y });
+    latestPlayer = player;
     if (hasWinningPosition()) {
-      return { grid, previousPlayer: player, msg: `Winner: ${player}.` };
+      return { grid, previousPlayer: latestPlayer, msg: `Winner: ${player}.` };
     } else if (isGridFull()) {
-      return { grid, previousPlayer: player, msg: "Tie. Game over." };
+      return { grid, previousPlayer: latestPlayer, msg: "Tie. Game over." };
     }
     console.log(grid);
-    return { grid, previousPlayer: player, msg: "Next move." };
+    return { grid, previousPlayer: latestPlayer, msg: "Next move." };
   } catch (e) {
     console.error(e);
-    if (e instanceof Error) return { grid, previousPlayer: player, msg: `Error: ${e.message}` };
+    if (e instanceof Error) return { grid, previousPlayer: latestPlayer, msg: `Error: ${e.message}` };
   }
 };
 
