@@ -22,7 +22,7 @@ export const initGame = () => {
 
 export const playerMove = (player: Player, { x, y }: Coordinates) => {
   try {
-    setMark(player, { x, y });
+    setMoveToGrid(player, { x, y });
     if (hasWinningPosition()) {
       return { grid, previousPlayer: player, msg: `Winner: ${player}.` };
     } else if (isGridFull()) {
@@ -36,7 +36,7 @@ export const playerMove = (player: Player, { x, y }: Coordinates) => {
   }
 };
 
-const setMark = (player: Player, { x, y }: Coordinates) => {
+const setMoveToGrid = (player: Player, { x, y }: Coordinates) => {
   if (grid[y][x]) throw Error("Tried writing over another player. Choose another position.");
   grid[y][x] = player;
 };
