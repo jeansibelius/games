@@ -13,9 +13,9 @@ describe("Playing tic-tac-toe", () => {
       expect(grid).toStrictEqual(initGrid);
     });
 
-    test("the previous player value is 1", () => {
-      const { previousPlayer } = initGame();
-      expect(previousPlayer).toBe(1);
+    test("the next player value is 1", () => {
+      const { nextPlayer } = initGame();
+      expect(nextPlayer).toBe(1);
     });
 
     test("a message is shown", () => {
@@ -27,17 +27,13 @@ describe("Playing tic-tac-toe", () => {
   describe("when making a single move", () => {
     const currentPlayer = 1;
     let grid: number[][];
-    let previousPlayer: number;
+    let nextPlayer: number;
     let msg: string;
     beforeEach(() => {
       initGame();
-      const {
-        grid: newGrid,
-        previousPlayer: newPreviousPlayer,
-        msg: newMsg,
-      } = playerMove(currentPlayer, { x: 0, y: 0 });
+      const { grid: newGrid, nextPlayer: newNextPlayer, msg: newMsg } = playerMove(currentPlayer, { x: 0, y: 0 });
       grid = newGrid;
-      previousPlayer = newPreviousPlayer;
+      nextPlayer = newNextPlayer;
       msg = newMsg;
     });
 
@@ -50,8 +46,8 @@ describe("Playing tic-tac-toe", () => {
       expect(grid).toStrictEqual(gridAfterMove);
     });
 
-    test("the previous player value is who made the latest move", () => {
-      expect(previousPlayer).toBe(currentPlayer);
+    test("the next player value is not who made the latest move", () => {
+      expect(nextPlayer).not.toBe(currentPlayer);
     });
 
     test("a message is shown", () => {
@@ -61,16 +57,12 @@ describe("Playing tic-tac-toe", () => {
     describe("if one tries to overwrite an existing move", () => {
       const currentPlayer = 2;
       let followingGrid: number[][];
-      let followingPreviousPlayer: number;
+      let followingNextPlayer: number;
       let followingMsg: string;
       beforeEach(() => {
-        const {
-          grid: newGrid,
-          previousPlayer: newPreviousPlayer,
-          msg: newMsg,
-        } = playerMove(currentPlayer, { x: 0, y: 0 });
+        const { grid: newGrid, nextPlayer: newPreviousPlayer, msg: newMsg } = playerMove(currentPlayer, { x: 0, y: 0 });
         followingGrid = newGrid;
-        followingPreviousPlayer = newPreviousPlayer;
+        followingNextPlayer = newPreviousPlayer;
         followingMsg = newMsg;
       });
 
@@ -78,8 +70,8 @@ describe("Playing tic-tac-toe", () => {
         expect(followingGrid).toStrictEqual(grid);
       });
 
-      test("the previous player value is NOT set to the latest one", () => {
-        expect(followingPreviousPlayer).toBe(previousPlayer);
+      test("the next player value is unchaged", () => {
+        expect(followingNextPlayer).toBe(nextPlayer);
       });
 
       test("a helpful error message is returned", () => {

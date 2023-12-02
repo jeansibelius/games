@@ -5,9 +5,9 @@ type Coordinates = {
   y: number;
 };
 
-interface GameResponse {
+export interface GameResponse {
   grid: typeof grid;
-  previousPlayer: Player;
+  nextPlayer: Player;
   msg: string;
 }
 
@@ -20,7 +20,7 @@ const initGrid = () => [
 
 // Game state
 let grid: number[][];
-let latestPlayer: Player = 1;
+let nextPlayer: Player = 1;
 
 export const initGame = (): GameResponse => {
   grid = initGrid();
@@ -30,12 +30,12 @@ export const initGame = (): GameResponse => {
 export const playerMove = (player: Player, { x, y }: Coordinates): GameResponse => {
   try {
     setMoveToGrid(player, { x, y });
-    latestPlayer = player;
+    nextPlayer = player === 1 ? 2 : 1;
   } catch (e) {
     if (e instanceof Error) return createResponse(`Error: ${e.message}`);
   }
   if (hasWinningPosition()) {
-    return createResponse(`Winner: ${player}.`);
+    return createResponse(`Winner: ${player}. Congratulations!`);
   } else if (isGridFull()) {
     return createResponse("Tie. Game over.");
   }
@@ -67,4 +67,4 @@ const isGridFull = () => {
   return !grid.flat().includes(0);
 };
 
-const createResponse = (msg: string): GameResponse => ({ grid, previousPlayer: latestPlayer, msg });
+const createResponse = (msg: string): GameResponse => ({ grid, nextPlayer, msg });
