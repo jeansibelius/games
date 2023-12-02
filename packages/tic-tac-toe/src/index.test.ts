@@ -27,7 +27,7 @@ describe("Playing tic-tac-toe", () => {
   describe("when making a single move", () => {
     const currentPlayer = 1;
     let grid: number[][];
-    let nextPlayer: number;
+    let nextPlayer: 1 | 2;
     let msg: string;
     beforeEach(() => {
       initGame();
@@ -76,6 +76,36 @@ describe("Playing tic-tac-toe", () => {
 
       test("a helpful error message is returned", () => {
         expect(followingMsg).toContain("Choose another position");
+      });
+    });
+
+    const outsideMoves = [
+      { x: -1, y: 2 },
+      { x: 3, y: 2 },
+      { x: 1, y: -1 },
+      { x: 0, y: 3 },
+    ];
+    describe.each(outsideMoves)("if one makes a move outside the grid", (outsideMove) => {
+      let followingGrid: number[][];
+      let followingNextPlayer: number;
+      let followingMsg: string;
+      beforeAll(() => {
+        const { grid: newGrid, nextPlayer: newNextPlayer, msg: newMsg } = playerMove(nextPlayer, outsideMove);
+        followingGrid = newGrid;
+        followingNextPlayer = newNextPlayer;
+        followingMsg = newMsg;
+      });
+
+      test("the grid is returned unchaged", () => {
+        expect(followingGrid).toStrictEqual(grid);
+      });
+
+      test("the next player value is unchanged", () => {
+        expect(followingNextPlayer).toBe(nextPlayer);
+      });
+
+      test("a helpful error message is returned", () => {
+        expect(followingMsg).toContain("Choose a position inside the grid");
       });
     });
   });
