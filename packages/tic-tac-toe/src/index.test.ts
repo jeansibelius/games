@@ -148,4 +148,39 @@ describe("Playing tic-tac-toe", () => {
       expect(msg).toContain("Winner");
     });
   });
+
+  describe("when a player fills the last available cell", () => {
+    const gridToPrepare = [
+      [1, 2, 1],
+      [2, 1, 1],
+      [2, 0, 2],
+    ];
+    const lastMove = { x: 1, y: 2 };
+
+    const currentPlayer = 1;
+    let grid: number[][];
+    let msg: string;
+    beforeAll(() => {
+      initGame();
+      gridToPrepare.forEach((row, y) => {
+        row.forEach((cell, x) => {
+          cell === 1 && playerMove(1, { x, y });
+          cell === 2 && playerMove(2, { x, y });
+        });
+      });
+      const { grid: newGrid, msg: newMsg } = playerMove(currentPlayer, lastMove);
+      grid = newGrid;
+      msg = newMsg;
+    });
+
+    test("the grid full is returned", () => {
+      const gridAfterMove = gridToPrepare;
+      gridAfterMove[lastMove.y][lastMove.x] = currentPlayer;
+      expect(grid).toStrictEqual(gridAfterMove);
+    });
+
+    test("a message is shown", () => {
+      expect(msg).toContain("Tie");
+    });
+  });
 });
