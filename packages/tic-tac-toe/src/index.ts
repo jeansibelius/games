@@ -5,14 +5,18 @@ type Coordinates = {
   y: number;
 };
 
-const grid = [
+const initGrid = () => [
   // x 0, 1, 2
   [0, 0, 0], // y 0
   [0, 0, 0], // y 1
   [0, 0, 0], // y 2
 ];
 
+// Game state
+let grid: number[][];
+
 export const initGame = () => {
+  grid = initGrid();
   return { grid, previousPlayer: 0, msg: "Waiting for the first move." };
 };
 
