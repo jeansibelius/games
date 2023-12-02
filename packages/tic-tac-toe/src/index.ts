@@ -43,6 +43,7 @@ export const playerMove = (player: Player, { x, y }: Coordinates): GameResponse 
 };
 
 const setMoveToGrid = (player: Player, { x, y }: Coordinates) => {
+  if (x < 0 || x > 2 || y < 0 || y > 2) throw Error("Move outside the grid. Choose a position inside the grid.");
   if (grid[y][x]) throw Error("Tried writing over another player. Choose another position.");
   grid[y][x] = player;
 };
