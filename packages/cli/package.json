@@ -16,6 +16,7 @@
   "author": "Rafael Linnankoski",
   "license": "MIT",
   "devDependencies": {
+    "@inquirer/type": "^1.1.5",
     "@types/node": "^20.10.0",
     "@typescript-eslint/eslint-plugin": "^6.12.0",
     "@typescript-eslint/parser": "^6.12.0",
@@ -27,6 +28,7 @@
     "vitest": "^0.34.6"
   },
   "dependencies": {
+    "@inquirer/core": "^5.1.1",
     "@inquirer/prompts": "^3.3.0",
     "tic-tac-toe": "workspace:*",
     "picocolors": "^1.0.0"
