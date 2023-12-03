@@ -1,22 +1,9 @@
 import pc from "picocolors";
 
 import { coordinatePrompt } from "./coordinatePrompt.js";
+import { addLeftPadding, getLeftPaddingToCenter } from "./utils.js";
 
 import { GameResponse, initGame, playerMove } from "tic-tac-toe";
-
-const terminalSize = {
-  width: process.stdout.columns,
-  height: process.stdout.rows,
-};
-
-const addLeftPadding = (str: string, leftPadding: number) => {
-  return " ".repeat(leftPadding).concat(str);
-};
-
-const getLeftPaddingToCenter = (str: string, centerBy?: string) => {
-  const strLen = centerBy ? str.length - centerBy.length + str.length : str.length;
-  return Math.floor((terminalSize.width - strLen) / 2);
-};
 
 interface Coordinates {
   x: number;
