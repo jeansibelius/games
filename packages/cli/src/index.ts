@@ -53,24 +53,19 @@ const getLeftPaddingToCenter = (str: string, centerBy?: string) => {
 class TicTacToe {
   gameTitle = "  Tic-Tac-Toe  ";
 
-  msg = "";
-  nextPlayer: 1 | 2 = 1;
-  move = { x: NaN, y: NaN };
+  move: Coordinates = { x: NaN, y: NaN };
+  latestMove: GameResponse;
+
+  constructor() {
+    this.latestMove = initGame();
+    this.renderMove();
+  }
 
   play = async () => {
-    while (!this.msg.includes("Winner") && !this.msg.includes("Tie")) {
-      let latestMove: GameResponse;
-      if (!this.msg) {
-        latestMove = initGame();
-        this.msg = latestMove.msg;
-        this.nextPlayer = latestMove.nextPlayer;
-        this.renderMove(latestMove);
-      }
+    while (!this.latestMove.msg.includes("Winner") && !this.latestMove.msg.includes("Tie")) {
       this.move = await this.makeChoice();
-      latestMove = playerMove(this.nextPlayer, this.move);
-      this.msg = latestMove.msg;
-      this.nextPlayer = latestMove.nextPlayer;
-      this.renderMove(latestMove);
+      this.latestMove = playerMove(this.latestMove.nextPlayer, this.move);
+      this.renderMove();
     }
   };
 
@@ -81,7 +76,7 @@ class TicTacToe {
     };
   };
 
-  private renderGrid = (grid: number[][]) => {
+  private renderGrid = () => {
     const gridTemplate = [
       " y/x    0     1     2        ", // 0: Index row
       "      _________________      ", // 1: Grid top edge
@@ -90,7 +85,7 @@ class TicTacToe {
       "     |_____|_____|_____|     ", // 4: Row top & bottom
     ];
 
-    grid.forEach((row, rowNum) => {
+    this.latestMove.grid.forEach((row, rowNum) => {
       let signRow = gridTemplate[3].replace("Y", pc.dim(String(rowNum)));
       row.forEach((colValue, colNum) => {
         let value = colValue > 0 ? String(colValue) : " ";
@@ -111,18 +106,20 @@ class TicTacToe {
     });
   };
 
-  private renderMove = (gameResponse: GameResponse) => {
+  private renderMove = () => {
     console.clear();
     console.log(`\n${addLeftPadding(pc.bgBlue(this.gameTitle), getLeftPaddingToCenter(this.gameTitle))}\n`);
 
-    this.renderGrid(gameResponse.grid);
+    this.renderGrid();
 
-    console.log(`\n${addLeftPadding(gameResponse.msg, getLeftPaddingToCenter(gameResponse.msg))}\n`);
+    const NextMoveMsg = `\n${addLeftPadding(this.latestMove.msg, getLeftPaddingToCenter(this.latestMove.msg))}\n`;
+    console.log(NextMoveMsg);
 
-    const nextPlayerMsg = `Your turn, player ${gameResponse.nextPlayer}`;
-    console.log(`\n${addLeftPadding(nextPlayerMsg, getLeftPaddingToCenter(nextPlayerMsg, this.gameTitle))}\n`);
+    const nextPlayerMsg = `Your turn, player ${this.latestMove.nextPlayer}`;
+    !this.latestMove.msg.includes("Winner") &&
+      console.log(`\n${addLeftPadding(nextPlayerMsg, getLeftPaddingToCenter(nextPlayerMsg, this.gameTitle))}\n`);
 
-    return gameResponse;
+    return this.latestMove;
   };
 }
 
