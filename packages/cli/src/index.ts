@@ -1,5 +1,6 @@
-import { input, select } from "@inquirer/prompts";
+import { select } from "@inquirer/prompts";
 import pc from "picocolors";
+import { coordinatePrompt } from "./coordinatePrompt.ts";
 
 import { GameResponse, initGame, playerMove } from "tic-tac-toe";
 
@@ -49,11 +50,16 @@ const getLeftPaddingToCenter = (str: string, centerBy?: string) => {
   return Math.floor((terminalSize.width - strLen) / 2);
 };
 
+interface Coordinates {
+  x: number;
+  y: number;
+}
+
 // Games
 class TicTacToe {
   gameTitle = "  Tic-Tac-Toe  ";
 
-  move: Coordinates = { x: NaN, y: NaN };
+  move: Coordinates = { x: 1, y: 1 };
   latestMove: GameResponse;
 
   constructor() {
@@ -63,17 +69,22 @@ class TicTacToe {
 
   play = async () => {
     while (!this.latestMove.msg.includes("Winner") && !this.latestMove.msg.includes("Tie")) {
-      this.move = await this.makeChoice();
+      await this.makeMove();
       this.latestMove = playerMove(this.latestMove.nextPlayer, this.move);
       this.renderMove();
     }
   };
 
-  private makeChoice = async (): Promise<{ x: number; y: number }> => {
-    return {
-      y: Number(await input({ message: "Choose row (y)" })),
-      x: Number(await input({ message: "Choose column (x)" })),
-    };
+  private makeMove = async (): Promise<void> => {
+    await coordinatePrompt({
+      message: "coordinates",
+      default: JSON.stringify(this.move),
+      updateCoordinatesCallback: (coordinates: Coordinates) => {
+        this.move = coordinates;
+        this.renderMove();
+        return this.move;
+      },
+    });
   };
 
   private renderGrid = () => {
@@ -89,6 +100,10 @@ class TicTacToe {
       let signRow = gridTemplate[3].replace("Y", pc.dim(String(rowNum)));
       row.forEach((colValue, colNum) => {
         let value = colValue > 0 ? String(colValue) : " ";
+        if (this.move.y === rowNum && this.move.x === colNum) {
+          const cellColor = value === " " ? pc.bgGreen : pc.bgRed;
+          value = cellColor(value);
+        }
         signRow = signRow.replace("X", value);
       });
 
