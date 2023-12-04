@@ -32,4 +32,20 @@ export const initGame = (): GameResponse => {
   return createResponse("Waiting for the first move.");
 };
 
+export const playerMove = (player: Player, { x, y }: Coordinates): GameResponse => {
+  try {
+    setMoveToGrid(player, { x, y });
+    nextPlayer = player === 1 ? 2 : 1;
+  } catch (e) {
+    if (e instanceof Error) return createResponse(`Error: ${e.message}`);
+  }
+  return createResponse("Next move.");
+};
+
+const setMoveToGrid = (player: Player, { x, y }: Coordinates) => {
+  if (x < 0 || x > 7 || y < 0 || y > 7) throw Error("Move outside the grid. Choose a position inside the grid.");
+  if (grid[y][x]) throw Error("Tried writing over another player. Choose another position.");
+  grid[y][x] = player;
+};
+
 const createResponse = (msg: string): GameResponse => ({ grid, nextPlayer, msg });
