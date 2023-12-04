@@ -1,7 +1,8 @@
-import { GameResponse, initGame, playerMove } from "../../tic-tac-toe/src/index.ts";
-import { coordinatePrompt } from "./coordinatePrompt.ts";
-
 import pc from "picocolors";
+
+import { coordinatePrompt } from "./coordinatePrompt.js";
+
+import { GameResponse, initGame, playerMove } from "tic-tac-toe";
 
 const terminalSize = {
   width: process.stdout.columns,
@@ -23,37 +24,36 @@ interface Coordinates {
 }
 
 export class TicTacToe {
-  gameTitle = "  Tic-Tac-Toe  ";
-
-  move: Coordinates = { x: 1, y: 1 };
-  latestMove: GameResponse;
+  #gameTitle = "  Tic-Tac-Toe  ";
+  #move: Coordinates = { x: 1, y: 1 };
+  #latestMove: GameResponse;
 
   constructor() {
-    this.latestMove = initGame();
+    this.#latestMove = initGame();
     this.renderMove();
   }
 
   play = async () => {
-    while (!this.latestMove.msg.includes("Winner") && !this.latestMove.msg.includes("Tie")) {
-      await this.makeMove();
-      this.latestMove = playerMove(this.latestMove.nextPlayer, this.move);
+    while (!this.#latestMove.msg.includes("Winner") && !this.#latestMove.msg.includes("Tie")) {
+      await this.#makeMove();
+      this.#latestMove = playerMove(this.#latestMove.nextPlayer, this.#move);
       this.renderMove();
     }
   };
 
-  private makeMove = async (): Promise<void> => {
+  #makeMove = async (): Promise<void> => {
     await coordinatePrompt({
       message: "coordinates",
-      default: JSON.stringify(this.move),
+      default: JSON.stringify(this.#move),
       updateCoordinatesCallback: (coordinates: Coordinates) => {
-        this.move = coordinates;
+        this.#move = coordinates;
         this.renderMove();
-        return this.move;
+        return this.#move;
       },
     });
   };
 
-  private renderGrid = () => {
+  #renderGrid = () => {
     const gridTemplate = [
       " y/x    0     1     2        ", // 0: Index row
       "      _________________      ", // 1: Grid top edge
@@ -62,11 +62,11 @@ export class TicTacToe {
       "     |_____|_____|_____|     ", // 4: Row top & bottom
     ];
 
-    this.latestMove.grid.forEach((row, rowNum) => {
+    this.#latestMove.grid.forEach((row, rowNum) => {
       let signRow = gridTemplate[3].replace("Y", pc.dim(String(rowNum)));
       row.forEach((colValue, colNum) => {
         let value = colValue > 0 ? String(colValue) : " ";
-        if (this.move.y === rowNum && this.move.x === colNum) {
+        if (this.#move.y === rowNum && this.#move.x === colNum) {
           const cellColor = value === " " ? pc.bgGreen : pc.bgRed;
           value = cellColor(value);
         }
@@ -89,17 +89,17 @@ export class TicTacToe {
 
   private renderMove = () => {
     console.clear();
-    console.log(`\n${addLeftPadding(pc.bgBlue(this.gameTitle), getLeftPaddingToCenter(this.gameTitle))}\n`);
+    console.log(`\n${addLeftPadding(pc.bgBlue(this.#gameTitle), getLeftPaddingToCenter(this.#gameTitle))}\n`);
 
-    this.renderGrid();
+    this.#renderGrid();
 
-    const NextMoveMsg = `\n${addLeftPadding(this.latestMove.msg, getLeftPaddingToCenter(this.latestMove.msg))}\n`;
+    const NextMoveMsg = `\n${addLeftPadding(this.#latestMove.msg, getLeftPaddingToCenter(this.#latestMove.msg))}\n`;
     console.log(NextMoveMsg);
 
-    const nextPlayerMsg = `Your turn, player ${this.latestMove.nextPlayer}`;
-    !this.latestMove.msg.includes("Winner") &&
-      console.log(`\n${addLeftPadding(nextPlayerMsg, getLeftPaddingToCenter(nextPlayerMsg, this.gameTitle))}\n`);
+    const nextPlayerMsg = `Your turn, player ${this.#latestMove.nextPlayer}`;
+    !this.#latestMove.msg.includes("Winner") &&
+      console.log(`\n${addLeftPadding(nextPlayerMsg, getLeftPaddingToCenter(nextPlayerMsg, this.#gameTitle))}\n`);
 
-    return this.latestMove;
+    return this.#latestMove;
   };
 }

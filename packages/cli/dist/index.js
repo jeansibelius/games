@@ -1,5 +1,6 @@
 import { select } from "@inquirer/prompts";
 import pc from "picocolors";
+import { TicTacToe } from "./cliTicTacToe.js";
 const gameChoices = [
     { value: 1, name: "Tic-Tac-Toe" },
     { value: 2, name: `Reversi ${pc.gray("(coming soon)")}`, disabled: true },
@@ -15,11 +16,10 @@ const main = async () => {
     const gameChoice = await select({ message: "What game would you like to play?", choices: gameChoices });
     switch (gameChoice) {
         case 1:
-            console.log("tic-tac-toe");
+            await new TicTacToe().play();
             break;
     }
     console.log("Thanks for playing!");
     process.exit(0);
 };
-// Start CLI
 await main();
