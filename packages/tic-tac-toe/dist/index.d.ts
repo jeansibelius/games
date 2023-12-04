@@ -3,14 +3,12 @@ type Coordinates = {
     x: number;
     y: number;
 };
-export declare const initGame: () => {
-    grid: number[][];
-    previousPlayer: number;
+export interface GameResponse {
+    grid: typeof grid;
+    nextPlayer: Player;
     msg: string;
-};
-export declare const playerMove: (player: Player, { x, y }: Coordinates) => {
-    grid: number[][];
-    previousPlayer: Player;
-    msg: string;
-} | undefined;
+}
+declare let grid: number[][];
+export declare const initGame: () => GameResponse;
+export declare const playerMove: (player: Player, { x, y }: Coordinates) => GameResponse;
 export {};

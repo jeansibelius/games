@@ -1,31 +1,36 @@
-const grid = [
+const initGrid = () => [
     // x 0, 1, 2
     [0, 0, 0], // y 0
     [0, 0, 0], // y 1
     [0, 0, 0], // y 2
 ];
+// Game state
+let grid;
+let nextPlayer = 1;
 export const initGame = () => {
-    return { grid, previousPlayer: 0, msg: "Waiting for the first move." };
+    grid = initGrid();
+    return createResponse("Waiting for the first move.");
 };
 export const playerMove = (player, { x, y }) => {
     try {
-        setMark(player, { x, y });
-        if (hasWinningPosition()) {
-            return { grid, previousPlayer: player, msg: `Winner: ${player}.` };
-        }
-        else if (isGridFull()) {
-            return { grid, previousPlayer: player, msg: "Tie. Game over." };
-        }
-        console.log(grid);
-        return { grid, previousPlayer: player, msg: "Next move." };
+        setMoveToGrid(player, { x, y });
+        nextPlayer = player === 1 ? 2 : 1;
     }
     catch (e) {
-        console.error(e);
         if (e instanceof Error)
-            return { grid, previousPlayer: player, msg: `Error: ${e.message}` };
+            return createResponse(`Error: ${e.message}`);
     }
+    if (hasWinningPosition()) {
+        return createResponse(`Winner: ${player}. Congratulations!`);
+    }
+    else if (isGridFull()) {
+        return createResponse("Tie. Game over.");
+    }
+    return createResponse("Next move.");
 };
-const setMark = (player, { x, y }) => {
+const setMoveToGrid = (player, { x, y }) => {
+    if (x < 0 || x > 2 || y < 0 || y > 2)
+        throw Error("Move outside the grid. Choose a position inside the grid.");
     if (grid[y][x])
         throw Error("Tried writing over another player. Choose another position.");
     grid[y][x] = player;
@@ -51,3 +56,4 @@ const hasWinningPosition = () => {
 const isGridFull = () => {
     return !grid.flat().includes(0);
 };
+const createResponse = (msg) => ({ grid, nextPlayer, msg });
