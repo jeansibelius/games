@@ -32,12 +32,13 @@ describe("Playing Othello", () => {
 
   describe("when making a single move", () => {
     const currentPlayer = 1;
+    const latestMove = { x: 5, y: 3 };
     let grid: number[][];
     let nextPlayer: 1 | 2;
     let msg: string;
     beforeEach(() => {
       initGame();
-      const { grid: newGrid, nextPlayer: newNextPlayer, msg: newMsg } = playerMove(currentPlayer, { x: 5, y: 3 });
+      const { grid: newGrid, nextPlayer: newNextPlayer, msg: newMsg } = playerMove(currentPlayer, latestMove);
       grid = newGrid;
       nextPlayer = newNextPlayer;
       msg = newMsg;
@@ -93,6 +94,31 @@ describe("Playing Othello", () => {
 
       test("a helpful error message is returned", () => {
         expect(followingMsg).toContain("Choose a position inside the grid");
+      });
+    });
+
+    describe("if one tries to overwrite an existing move", () => {
+      const currentPlayer = 2;
+      let followingGrid: number[][];
+      let followingNextPlayer: number;
+      let followingMsg: string;
+      beforeEach(() => {
+        const { grid: newGrid, nextPlayer: newPreviousPlayer, msg: newMsg } = playerMove(currentPlayer, latestMove);
+        followingGrid = newGrid;
+        followingNextPlayer = newPreviousPlayer;
+        followingMsg = newMsg;
+      });
+
+      test("the grid is returned unchaged", () => {
+        expect(followingGrid).toStrictEqual(grid);
+      });
+
+      test("the next player value is unchaged", () => {
+        expect(followingNextPlayer).toBe(nextPlayer);
+      });
+
+      test("a helpful error message is returned", () => {
+        expect(followingMsg).toContain("Choose another position");
       });
     });
   });
