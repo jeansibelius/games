@@ -8,11 +8,9 @@ const gameChoices = [
 const main = async () => {
     console.clear();
     console.log();
-    console.log(pc.bgBlue(`  Mini CLI games  `));
-    console.log();
-    console.log("Welcome!");
-    console.log();
-    console.log(pc.gray("Exit anytime with Ctrl+C\n"));
+    console.log(pc.bgBlue(`                    \n   Mini CLI games   \n                    `));
+    console.log("\nWelcome to command line two-player games!\n");
+    console.log(pc.gray("(exit anytime with Ctrl+C)\n"));
     const gameChoice = await select({ message: "What game would you like to play?", choices: gameChoices });
     switch (gameChoice) {
         case 1:
