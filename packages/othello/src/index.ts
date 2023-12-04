@@ -35,6 +35,14 @@ export const initGame = (): GameResponse => {
 export const playerMove = (player: Player, { x, y }: Coordinates): GameResponse => {
   try {
     setMoveToGrid(player, { x, y });
+    // TODO flip values around latest move
+    // 1. If own "color", return false
+    // 2. Continue moving in "same" direction
+    // 3. If own color, return true
+    // 4. If true, flip value to current player
+
+    // TODO find, if there are available moves for next player
+    // If not, next player is current
     nextPlayer = player === 1 ? 2 : 1;
   } catch (e) {
     if (e instanceof Error) return createResponse(`Error: ${e.message}`);
