@@ -52,6 +52,123 @@ const setMoveToGrid = (player: Player, { x, y }: Coordinates) => {
   grid[y][x] = player;
 };
 
+const getEmptyAdjacentCoordinates = (grid: number[][]): Coordinates[] => {
+  let outline: Map<string, Coordinates> = new Map();
+  grid.forEach((row, rowNum) => {
+    row.forEach((col, colNum) => {
+      const adjacentCoordinatesToCheck = [
+        { x: colNum + 1, y: rowNum }, // Next col
+        { x: colNum, y: rowNum + 1 }, // Next row
+        { x: colNum + 1, y: rowNum + 1 }, // Bottom-right
+        { x: colNum - 1, y: rowNum + 1 }, // Bottom-left
+      ];
+      adjacentCoordinatesToCheck.forEach(
+        (coordinates) => (outline = checkAndMark(grid, col, { x: colNum, y: rowNum }, coordinates, outline))
+      );
+    });
+  });
+  return Array.from(outline.values());
+};
+if (import.meta.vitest) {
+  const { describe, test, expect } = await import("vitest");
+  describe(getEmptyAdjacentCoordinates.name, () => {
+    const fn = getEmptyAdjacentCoordinates;
+
+    const testCases = [
+      {
+        testGrid: [
+          // x 0, 1, 2, 3, 4, 5, 6, 7
+          [0, 0, 0, 0, 0, 0, 0, 0], // y 0
+          [0, 0, 0, 0, 0, 0, 0, 0], // y 1
+          [0, 0, 0, 0, 0, 0, 0, 0], // y 2
+          [0, 0, 0, 1, 2, 0, 0, 0], // y 3
+          [0, 0, 0, 2, 1, 0, 0, 0], // y 4
+          [0, 0, 0, 0, 0, 0, 0, 0], // y 5
+          [0, 0, 0, 0, 0, 0, 0, 0], // y 6
+          [0, 0, 0, 0, 0, 0, 0, 0], // y 7
+        ],
+        expectedCoordinates: [
+          { x: 2, y: 2 },
+          { x: 3, y: 2 },
+          { x: 4, y: 2 },
+          { x: 5, y: 2 },
+          { x: 2, y: 3 },
+          { x: 5, y: 3 },
+          { x: 2, y: 4 },
+          { x: 5, y: 4 },
+          { x: 2, y: 5 },
+          { x: 3, y: 5 },
+          { x: 4, y: 5 },
+          { x: 5, y: 5 },
+        ],
+      },
+      {
+        testGrid: [
+          // x 0, 1, 2, 3, 4, 5, 6, 7
+          [0, 0, 0, 0, 0, 0, 0, 0], // y 0
+          [0, 0, 0, 0, 0, 0, 0, 0], // y 1
+          [0, 0, 0, 0, 0, 0, 0, 0], // y 2
+          [0, 0, 0, 1, 2, 0, 0, 0], // y 3
+          [0, 0, 0, 2, 1, 0, 0, 0], // y 4
+          [0, 0, 0, 0, 2, 1, 0, 0], // y 5
+          [0, 0, 0, 0, 0, 0, 0, 0], // y 6
+          [0, 0, 0, 0, 0, 0, 0, 0], // y 7
+        ],
+        expectedCoordinates: [
+          { x: 2, y: 2 },
+          { x: 3, y: 2 },
+          { x: 4, y: 2 },
+          { x: 5, y: 2 },
+          { x: 2, y: 3 },
+          { x: 5, y: 3 },
+          { x: 2, y: 4 },
+          { x: 5, y: 4 },
+          { x: 6, y: 4 },
+          { x: 2, y: 5 },
+          { x: 3, y: 5 },
+          { x: 6, y: 5 },
+          { x: 3, y: 6 },
+          { x: 4, y: 6 },
+          { x: 5, y: 6 },
+          { x: 6, y: 6 },
+        ],
+      },
+    ];
+    test.each(testCases)("returns correct positions", ({ testGrid, expectedCoordinates }) => {
+      const coordinates = fn(testGrid);
+      coordinates.forEach((coordinate) => {
+        expect(expectedCoordinates).toContainEqual(coordinate);
+      });
+      expect(expectedCoordinates.length).toBe(coordinates.length);
+    });
+  });
+}
+
+const checkAndMark = (
+  grid: number[][],
+  currentCellValue: number,
+  currentCoordinates: Coordinates,
+  adjacentCoordinates: Coordinates,
+  recordOfCoordinates: Map<string, Coordinates>
+) => {
+  const { x, y } = adjacentCoordinates;
+  if (x >= 0 && y >= 0 && x < 8 && y < 8) {
+    const nextCellValue = grid[y][x];
+    if (currentCellValue === 0 && nextCellValue !== 0) {
+      // If current is 0,
+      // mark, if next is non-0
+      const coordinatesToSet = { x: currentCoordinates.x, y: currentCoordinates.y };
+      recordOfCoordinates.set(`${coordinatesToSet.x},${coordinatesToSet.y}`, coordinatesToSet);
+    } else if (currentCellValue !== 0 && nextCellValue === 0) {
+      // Else (current is non-0),
+      // mark, if next is 0
+      const coordinatesToSet = { x, y };
+      recordOfCoordinates.set(`${coordinatesToSet.x},${coordinatesToSet.y}`, coordinatesToSet);
+    }
+  }
+  return recordOfCoordinates;
+};
+
 const doFlips = (player: Player, move: Coordinates) => {
   const directionsToCheck = [
     { x: +0, y: +1 }, // Down
