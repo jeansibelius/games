@@ -27,6 +27,10 @@ const initGrid = () => [
 let grid: number[][];
 let nextPlayer: Player = 1;
 
+const togglePlayer = () => {
+  nextPlayer = nextPlayer === 1 ? 2 : 1;
+};
+
 export const initGame = (): GameResponse => {
   grid = initGrid();
   return createResponse("Waiting for the first move.");
@@ -39,7 +43,7 @@ export const playerMove = (player: Player, { x, y }: Coordinates): GameResponse 
 
     // TODO find, if there are available moves for next player
     // If not, next player is current
-    nextPlayer = player === 1 ? 2 : 1;
+    togglePlayer();
   } catch (e) {
     if (e instanceof Error) return createResponse(`Error: ${e.message}`);
   }
