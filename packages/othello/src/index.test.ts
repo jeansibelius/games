@@ -36,7 +36,7 @@ describe("Playing Othello", () => {
     let grid: number[][];
     let nextPlayer: 1 | 2;
     let msg: string;
-    beforeEach(() => {
+    beforeAll(() => {
       initGame();
       const { grid: newGrid, nextPlayer: newNextPlayer, msg: newMsg } = playerMove(currentPlayer, latestMove);
       grid = newGrid;
