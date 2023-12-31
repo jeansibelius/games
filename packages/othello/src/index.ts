@@ -225,14 +225,12 @@ const getPositionsThatCanFlip = (
   positionsToFlip: Coordinates[] = []
 ) => {
   const { x, y } = { x: thisPosition.x + translate.x, y: thisPosition.y + translate.y };
-  console.log("x y", x, y);
   // Base cases
   if (grid[y][x] === player)
     positionsToFlip = [...positionsToFlip, ...getPositionsThatCanFlip(player, { x, y }, translate)];
   if (x < 0 || y < 0 || x > 7 || y > 7) return positionsToFlip; // Went outside
   if (grid[y][x] === 0) return positionsToFlip; // Reached an empty position
   if (grid[thisPosition.y][thisPosition.x] === player && grid[y][x] !== player) return [{ x, y }]; // Found the enemy, flip all previous
-  console.log("positionsToFlip:", positionsToFlip);
 
   return positionsToFlip;
 };
