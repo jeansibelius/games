@@ -40,13 +40,14 @@ export const playerMove = (player: Player, { x, y }: Coordinates): GameResponse 
   try {
     setMoveToGrid(player, { x, y });
     doFlips(player, { x, y });
-
-    // TODO find, if there are available moves for next player
-    // If not, next player is current
-    togglePlayer();
   } catch (e) {
     if (e instanceof Error) return createResponse(`Error: ${e.message}`);
   }
+
+  // Find, if there are available moves for next player
+  // If not, next player is current
+  togglePlayer();
+
   return createResponse("Next move.");
 };
 
