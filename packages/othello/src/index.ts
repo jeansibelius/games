@@ -173,18 +173,19 @@ const checkAndMark = (
   return recordOfCoordinates;
 };
 
+const coordinateDirections = [
+  { x: +0, y: +1 }, // Down
+  { x: +0, y: -1 }, // Up
+  { x: -1, y: +0 }, // Left
+  { x: +1, y: +0 }, // Right
+  { x: +1, y: +1 }, // Down-Right
+  { x: -1, y: +1 }, // Down-Left
+  { x: +1, y: -1 }, // Up-Right
+  { x: -1, y: -1 }, // Up-Left
+];
+
 const doFlips = (player: Player, move: Coordinates) => {
-  const directionsToCheck = [
-    { x: +0, y: +1 }, // Down
-    { x: +0, y: -1 }, // Up
-    { x: -1, y: +0 }, // Left
-    { x: +1, y: +0 }, // Right
-    { x: +1, y: +1 }, // Down-Right
-    { x: -1, y: +1 }, // Down-Left
-    { x: +1, y: -1 }, // Up-Right
-    { x: -1, y: -1 }, // Up-Left
-  ];
-  directionsToCheck.forEach((translate) => {
+  coordinateDirections.forEach((translate) => {
     getPositionsThatCanFlip(player, move, translate).forEach(({ x, y }) => {
       grid[y][x] = player;
     });
