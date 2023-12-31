@@ -8,6 +8,7 @@ type Coordinates = {
 export interface GameResponse {
   grid: typeof grid;
   nextPlayer: Player;
+  possibleMoves: Coordinates[];
   msg: string;
 }
 
@@ -26,6 +27,7 @@ const initGrid = () => [
 // Game state
 let grid: number[][];
 let nextPlayer: Player = 1;
+let possibleMoves: Coordinates[];
 
 const togglePlayer = () => {
   nextPlayer = nextPlayer === 1 ? 2 : 1;
@@ -45,7 +47,20 @@ export const playerMove = (player: Player, { x, y }: Coordinates): GameResponse 
   }
 
   // Find, if there are available moves for next player
-  // If not, next player is current
+  const positionsWhereCanPlay = getEmptyAdjacentCoordinates(grid).reduce(
+    (remainingPositions: Coordinates[], positionToCheck) => {
+      if (couldFlip(nextPlayer, positionToCheck)) {
+        remainingPositions.push(positionToCheck);
+      }
+      return remainingPositions;
+    },
+    []
+  );
+  if (positionsWhereCanPlay.length === 0) {
+    return createResponse(`No available moves. ${nextPlayer} move again.`);
+  }
+  possibleMoves = positionsWhereCanPlay;
+
   togglePlayer();
 
   return createResponse("Next move.");
@@ -185,6 +200,16 @@ const coordinateDirections = [
   { x: -1, y: -1 }, // Up-Left
 ];
 
+const couldFlip = (player: Player, fromPosition: Coordinates) => {
+  for (const translate of coordinateDirections) {
+    const positionsThatCouldFlip = getPositionsThatCanFlip(player, fromPosition, translate);
+    if (positionsThatCouldFlip.length > 0) {
+      return true;
+    }
+  }
+  false;
+};
+
 const doFlips = (player: Player, move: Coordinates) => {
   coordinateDirections.forEach((translate) => {
     getPositionsThatCanFlip(player, move, translate).forEach(({ x, y }) => {
@@ -206,10 +231,10 @@ const getPositionsThatCanFlip = (
     positionsToFlip = [...positionsToFlip, ...getPositionsThatCanFlip(player, { x, y }, translate)];
   if (x < 0 || y < 0 || x > 7 || y > 7) return positionsToFlip; // Went outside
   if (grid[y][x] === 0) return positionsToFlip; // Reached an empty position
-  if (grid[y][x] !== player) return [{ x, y }]; // Found the enemy, flip all previous
+  if (grid[thisPosition.y][thisPosition.x] === player && grid[y][x] !== player) return [{ x, y }]; // Found the enemy, flip all previous
   console.log("positionsToFlip:", positionsToFlip);
 
   return positionsToFlip;
 };
 
-const createResponse = (msg: string): GameResponse => ({ grid, nextPlayer, msg });
+const createResponse = (msg: string): GameResponse => ({ grid, nextPlayer, possibleMoves, msg });
