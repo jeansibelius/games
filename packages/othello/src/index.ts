@@ -46,6 +46,7 @@ export const playerMove = (player: Player, { x, y }: Coordinates): GameResponse 
     if (e instanceof Error) return createResponse(`Error: ${e.message}`);
   }
 
+  togglePlayer();
   // Find, if there are available moves for next player
   const positionsWhereCanPlay = getEmptyAdjacentCoordinates(grid).reduce(
     (remainingPositions: Coordinates[], positionToCheck) => {
@@ -57,11 +58,11 @@ export const playerMove = (player: Player, { x, y }: Coordinates): GameResponse 
     []
   );
   if (positionsWhereCanPlay.length === 0) {
-    return createResponse(`No available moves. ${nextPlayer} move again.`);
+    togglePlayer(); // Skip player
+    return createResponse(`No available moves. Player ${nextPlayer} move again.`);
   }
   possibleMoves = positionsWhereCanPlay;
 
-  togglePlayer();
 
   return createResponse("Next move.");
 };
@@ -202,7 +203,12 @@ const coordinateDirections = [
 
 const couldFlip = (player: Player, fromPosition: Coordinates) => {
   for (const translate of coordinateDirections) {
-    const positionsThatCouldFlip = getPositionsThatCanFlip(player, fromPosition, translate);
+    const tempGrid = grid.reduce((clonedArr: number[][], row) => {
+      clonedArr.push([...row]);
+      return clonedArr;
+    }, []); // Deep clone grid
+    tempGrid[fromPosition.y][fromPosition.x] = player;
+    const positionsThatCouldFlip = getPositionsThatCanFlip(tempGrid, player, fromPosition, translate);
     if (positionsThatCouldFlip.length > 0) {
       return true;
     }
@@ -212,13 +218,15 @@ const couldFlip = (player: Player, fromPosition: Coordinates) => {
 
 const doFlips = (player: Player, move: Coordinates) => {
   coordinateDirections.forEach((translate) => {
-    getPositionsThatCanFlip(player, move, translate).forEach(({ x, y }) => {
+    const positionsToFlip = getPositionsThatCanFlip(grid, player, move, translate);
+    positionsToFlip.forEach(({ x, y }) => {
       grid[y][x] = player;
     });
   });
 };
 
 const getPositionsThatCanFlip = (
+  gridToCheck: number[][],
   player: Player,
   thisPosition: Coordinates,
   translate: Coordinates,
@@ -226,11 +234,16 @@ const getPositionsThatCanFlip = (
 ) => {
   const { x, y } = { x: thisPosition.x + translate.x, y: thisPosition.y + translate.y };
   // Base cases
-  if (grid[y][x] === player)
-    positionsToFlip = [...positionsToFlip, ...getPositionsThatCanFlip(player, { x, y }, translate)];
   if (x < 0 || y < 0 || x > 7 || y > 7) return positionsToFlip; // Went outside
-  if (grid[y][x] === 0) return positionsToFlip; // Reached an empty position
-  if (grid[thisPosition.y][thisPosition.x] === player && grid[y][x] !== player) return [{ x, y }]; // Found the enemy, flip all previous
+  if (gridToCheck[y][x] === 0) return positionsToFlip; // Reached an empty position
+  if (gridToCheck[y][x] !== player)
+    positionsToFlip = [...positionsToFlip, ...getPositionsThatCanFlip(gridToCheck, player, { x, y }, translate)];
+  if (
+    gridToCheck[thisPosition.y][thisPosition.x] !== player && // Current position should the opposite player
+    gridToCheck[y][x] === player // Next position is the player
+  ) {
+    return [{ x: thisPosition.x, y: thisPosition.y }]; // Found the enemy, flip all previous
+  }
 
   return positionsToFlip;
 };

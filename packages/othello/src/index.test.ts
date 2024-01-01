@@ -136,5 +136,41 @@ describe("Playing Othello", () => {
         expect(followingMsg).toContain("Choose another position");
       });
     });
+
+    describe("when making a subsequent move", () => {
+      const latestMove = { x: 5, y: 2 };
+      let grid: number[][];
+      let nextNextPossibleMoves: (typeof latestMove)[];
+      beforeAll(() => {
+        const { grid: newGrid, nextPlayer: newNextPlayer, possibleMoves } = playerMove(nextPlayer, latestMove);
+        grid = newGrid;
+        nextPlayer = newNextPlayer;
+        nextNextPossibleMoves = possibleMoves;
+      });
+
+      test("the grid with the new move is returned", () => {
+        const gridAfterMove = [
+          // x 0, 1, 2, 3, 4, 5, 6, 7
+          [0, 0, 0, 0, 0, 0, 0, 0], // y 0
+          [0, 0, 0, 0, 0, 0, 0, 0], // y 1
+          [0, 0, 0, 0, 0, 2, 0, 0], // y 2
+          [0, 0, 0, 1, 2, 1, 0, 0], // y 3
+          [0, 0, 0, 2, 1, 0, 0, 0], // y 4
+          [0, 0, 0, 0, 0, 0, 0, 0], // y 5
+          [0, 0, 0, 0, 0, 0, 0, 0], // y 6
+          [0, 0, 0, 0, 0, 0, 0, 0], // y 7
+        ];
+        expect(grid).toStrictEqual(gridAfterMove);
+      });
+
+      test("the next possible moves are correct", () => {
+        expect(nextNextPossibleMoves).toStrictEqual([
+          { x: 5, y: 1 },
+          { x: 4, y: 2 },
+          { x: 2, y: 4 },
+          { x: 3, y: 5 },
+        ]);
+      });
+    });
   });
 });
