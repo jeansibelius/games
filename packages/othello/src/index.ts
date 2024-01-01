@@ -8,7 +8,7 @@ type Coordinates = {
 export interface GameResponse {
   grid: typeof grid;
   nextPlayer: Player;
-  possibleMoves: Coordinates[];
+  nextPossibleMoves: Coordinates[];
   msg: string;
 }
 
@@ -27,7 +27,7 @@ const initGrid = () => [
 // Game state
 let grid: number[][];
 let nextPlayer: Player = 1;
-let possibleMoves: Coordinates[];
+let nextPossibleMoves: Coordinates[];
 
 const togglePlayer = () => {
   nextPlayer = nextPlayer === 1 ? 2 : 1;
@@ -61,7 +61,7 @@ export const playerMove = (player: Player, { x, y }: Coordinates): GameResponse 
     togglePlayer(); // Skip player
     return createResponse(`No available moves. Player ${nextPlayer} move again.`);
   }
-  possibleMoves = positionsWhereCanPlay;
+  nextPossibleMoves = positionsWhereCanPlay;
 
 
   return createResponse("Next move.");
@@ -248,4 +248,4 @@ const getPositionsThatCanFlip = (
   return positionsToFlip;
 };
 
-const createResponse = (msg: string): GameResponse => ({ grid, nextPlayer, possibleMoves, msg });
+const createResponse = (msg: string): GameResponse => ({ grid, nextPlayer, nextPossibleMoves, msg });

@@ -35,19 +35,19 @@ describe("Playing Othello", () => {
     const latestMove = { x: 5, y: 3 };
     let grid: number[][];
     let nextPlayer: 1 | 2;
-    let nextPossibleMoves: (typeof latestMove)[];
+    let newNextPossibleMoves: (typeof latestMove)[];
     let msg: string;
     beforeAll(() => {
       initGame();
       const {
         grid: newGrid,
         nextPlayer: newNextPlayer,
-        possibleMoves,
+        nextPossibleMoves,
         msg: newMsg,
       } = playerMove(currentPlayer, latestMove);
       grid = newGrid;
       nextPlayer = newNextPlayer;
-      nextPossibleMoves = possibleMoves;
+      newNextPossibleMoves = nextPossibleMoves;
       msg = newMsg;
     });
 
@@ -71,7 +71,7 @@ describe("Playing Othello", () => {
     });
 
     test("the next possible moves are correct", () => {
-      expect(nextPossibleMoves).toStrictEqual([
+      expect(newNextPossibleMoves).toStrictEqual([
         { x: 3, y: 2 },
         { x: 5, y: 2 },
         { x: 5, y: 4 },
@@ -142,10 +142,10 @@ describe("Playing Othello", () => {
       let grid: number[][];
       let nextNextPossibleMoves: (typeof latestMove)[];
       beforeAll(() => {
-        const { grid: newGrid, nextPlayer: newNextPlayer, possibleMoves } = playerMove(nextPlayer, latestMove);
+        const { grid: newGrid, nextPlayer: newNextPlayer, nextPossibleMoves } = playerMove(nextPlayer, latestMove);
         grid = newGrid;
         nextPlayer = newNextPlayer;
-        nextNextPossibleMoves = possibleMoves;
+        nextNextPossibleMoves = nextPossibleMoves;
       });
 
       test("the grid with the new move is returned", () => {
