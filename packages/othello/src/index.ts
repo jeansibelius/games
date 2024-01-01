@@ -40,6 +40,9 @@ export const initGame = (): GameResponse => {
 
 export const playerMove = (player: Player, { x, y }: Coordinates): GameResponse => {
   try {
+    // TODO check available moves here.
+    // If this player can't move, toggle player
+    // If also the next player can't move, the game is over & announce winner
     setMoveToGrid(player, { x, y });
     doFlips(player, { x, y });
   } catch (e) {
