@@ -39,17 +39,18 @@ export const initGame = (initGrid = defaultGrid()): GameResponse => {
 };
 
 export const playerMove = (player: Player, { x, y }: Coordinates): GameResponse => {
+  let response: GameResponse | undefined;
   try {
     // TODO check available moves here.
     // If this player can't move, toggle player
     // If also the next player can't move, the game is over & announce winner
     setMoveToGrid(player, { x, y });
     doFlips(player, { x, y });
+    togglePlayer();
   } catch (e) {
-    if (e instanceof Error) return createResponse(`Error: ${e.message}`);
+    if (e instanceof Error) response = createResponse(`Error: ${e.message}. Player ${nextPlayer} move again.`);
   }
 
-  togglePlayer();
   // Find, if there are available moves for next player
   const positionsWhereCanPlay = getEmptyAdjacentCoordinates(grid).reduce(
     (remainingPositions: Coordinates[], positionToCheck) => {
@@ -62,12 +63,11 @@ export const playerMove = (player: Player, { x, y }: Coordinates): GameResponse 
   );
   if (positionsWhereCanPlay.length === 0) {
     togglePlayer(); // Skip player
-    return createResponse(`No available moves. Player ${nextPlayer} move again.`);
+    response = createResponse(`No available moves. Player ${nextPlayer} move again.`);
   }
   nextPossibleMoves = positionsWhereCanPlay;
 
-
-  return createResponse("Next move.");
+  return response || createResponse("Next move.");
 };
 
 const setMoveToGrid = (player: Player, { x, y }: Coordinates) => {
