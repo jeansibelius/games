@@ -38,34 +38,41 @@ export const initGame = (initGrid = defaultGrid()): GameResponse => {
   return createResponse("Waiting for the first move.");
 };
 
-export const playerMove = (player: Player, { x, y }: Coordinates): GameResponse => {
-  let response: GameResponse | undefined;
-  try {
-    // TODO check available moves here.
-    // If this player can't move, toggle player
-    // If also the next player can't move, the game is over & announce winner
-    setMoveToGrid(player, { x, y });
-    doFlips(player, { x, y });
-    togglePlayer();
-  } catch (e) {
-    if (e instanceof Error) response = createResponse(`Error: ${e.message}. Player ${nextPlayer} move again.`);
-  }
-
-  // Find, if there are available moves for next player
+const getAvailableMoves = (player: Player) => {
   const positionsWhereCanPlay = getEmptyAdjacentCoordinates(grid).reduce(
     (remainingPositions: Coordinates[], positionToCheck) => {
-      if (couldFlip(nextPlayer, positionToCheck)) {
+      if (couldFlip(player, positionToCheck)) {
         remainingPositions.push(positionToCheck);
       }
       return remainingPositions;
     },
     []
   );
-  if (positionsWhereCanPlay.length === 0) {
-    togglePlayer(); // Skip player
-    response = createResponse(`No available moves. Player ${nextPlayer} move again.`);
+  if (positionsWhereCanPlay.length === 0) throw Error(`No available moves.`);
+  return positionsWhereCanPlay;
+};
+
+export const playerMove = (player: Player, { x, y }: Coordinates): GameResponse => {
+  let response: GameResponse | undefined;
+  try {
+    setMoveToGrid(player, { x, y });
+    doFlips(player, { x, y });
+    togglePlayer();
+  } catch (e) {
+    if (e instanceof Error) response = createResponse(`Error: ${e.message}. Player ${nextPlayer} move again.`);
+  } finally {
+    // Find, if there are available moves for next player
+    try {
+      nextPossibleMoves = getAvailableMoves(nextPlayer);
+    } catch (e) {
+      // If this player can't move, toggle player
+      togglePlayer();
+      // TODO If also this player can't move, the game is over & announce winner
+      nextPossibleMoves = getAvailableMoves(nextPlayer);
+      if (e instanceof Error) response = createResponse(`Error: ${e.message}. Player ${nextPlayer} move again.`);
+    }
   }
-  nextPossibleMoves = positionsWhereCanPlay;
+
 
   return response || createResponse("Next move.");
 };
