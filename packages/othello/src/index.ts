@@ -12,7 +12,7 @@ export interface GameResponse {
   msg: string;
 }
 
-const initGrid = () => [
+const defaultGrid = () => [
   // x 0, 1, 2, 3, 4, 5, 6, 7
   [0, 0, 0, 0, 0, 0, 0, 0], // y 0
   [0, 0, 0, 0, 0, 0, 0, 0], // y 1
@@ -33,8 +33,8 @@ const togglePlayer = () => {
   nextPlayer = nextPlayer === 1 ? 2 : 1;
 };
 
-export const initGame = (): GameResponse => {
-  grid = initGrid();
+export const initGame = (initGrid = defaultGrid()): GameResponse => {
+  grid = initGrid;
   return createResponse("Waiting for the first move.");
 };
 
