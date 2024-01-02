@@ -173,4 +173,64 @@ describe("Playing Othello", () => {
       });
     });
   });
+
+  describe("when the next player has no available moves", () => {
+    const gridToInitialise = [
+      // x 0, 1, 2, 3, 4, 5, 6, 7
+      [0, 0, 0, 1, 1, 1, 1, 1], // y 0
+      [0, 0, 0, 1, 1, 1, 1, 1], // y 1
+      [0, 0, 0, 1, 1, 1, 1, 1], // y 2
+      [0, 0, 0, 1, 2, 1, 1, 1], // y 3
+      [0, 0, 0, 2, 0, 1, 1, 1], // y 4
+      [0, 0, 0, 0, 0, 0, 0, 0], // y 5
+      [0, 0, 0, 0, 0, 0, 0, 0], // y 6
+      [0, 0, 0, 0, 0, 0, 0, 0], // y 7
+    ];
+    const currentPlayer = 1;
+    const nextMove = { x: 4, y: 4 };
+    let newGrid: number[][];
+    let newNextPlayer: 1 | 2;
+    let newNextPossibleMoves: (typeof nextMove)[];
+    let newMsg: string;
+    beforeAll(() => {
+      initGame(gridToInitialise);
+      const { grid, nextPlayer, nextPossibleMoves, msg } = playerMove(currentPlayer, nextMove);
+      newGrid = grid;
+      newNextPlayer = nextPlayer;
+      newNextPossibleMoves = nextPossibleMoves;
+      newMsg = msg;
+    });
+
+    test("the grid with the latest move is returned", () => {
+      const gridWithNoNextMove = [
+        // x 0, 1, 2, 3, 4, 5, 6, 7
+        [0, 0, 0, 1, 1, 1, 1, 1], // y 0
+        [0, 0, 0, 1, 1, 1, 1, 1], // y 1
+        [0, 0, 0, 1, 1, 1, 1, 1], // y 2
+        [0, 0, 0, 1, 1, 1, 1, 1], // y 3
+        [0, 0, 0, 2, 1, 1, 1, 1], // y 4
+        [0, 0, 0, 0, 0, 0, 0, 0], // y 5
+        [0, 0, 0, 0, 0, 0, 0, 0], // y 6
+        [0, 0, 0, 0, 0, 0, 0, 0], // y 7
+      ];
+      expect(newGrid).toStrictEqual(gridWithNoNextMove);
+    });
+
+    test("a message with 'no available moves' is shown", () => {
+      expect(newMsg).toContain("No available moves.");
+      expect(newMsg).toContain(`Player ${currentPlayer} move again.`);
+    });
+
+    test("the next player value is the one who made the latest move", () => {
+      expect(newNextPlayer).toBe(currentPlayer);
+    });
+
+    test("the next possible moves are correct", () => {
+      expect(newNextPossibleMoves).toStrictEqual([
+        { x: 2, y: 4 },
+        { x: 3, y: 5 },
+        { x: 2, y: 5 },
+      ]);
+    });
+  });
 });
