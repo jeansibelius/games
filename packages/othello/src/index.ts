@@ -208,25 +208,16 @@ const coordinateDirections = [
 
 const couldFlip = (player: Player, fromPosition: Coordinates) => {
   for (const translate of coordinateDirections) {
-    const tempGrid = grid.reduce((clonedArr: number[][], row) => {
-      clonedArr.push([...row]);
-      return clonedArr;
-    }, []); // Deep clone grid
-    tempGrid[fromPosition.y][fromPosition.x] = player;
-    const positionsThatCouldFlip = getPositionsThatCanFlip(tempGrid, player, fromPosition, translate);
-    if (positionsThatCouldFlip.length > 0) {
-      return true;
-    }
+    const positionsThatCouldFlip = getPositionsThatCanFlip(grid, player, fromPosition, translate);
+    if (positionsThatCouldFlip) return true;
   }
-  false;
+  return false;
 };
 
 const doFlips = (player: Player, move: Coordinates) => {
   coordinateDirections.forEach((translate) => {
     const positionsToFlip = getPositionsThatCanFlip(grid, player, move, translate);
-    positionsToFlip.forEach(({ x, y }) => {
-      grid[y][x] = player;
-    });
+    if (positionsToFlip) positionsToFlip.forEach(({ x, y }) => (grid[y][x] = player));
   });
 };
 
@@ -239,18 +230,22 @@ const getPositionsThatCanFlip = (
 ) => {
   const { x, y } = { x: thisPosition.x + translate.x, y: thisPosition.y + translate.y };
   // Base cases
-  if (x < 0 || y < 0 || x > 7 || y > 7) return positionsToFlip; // Went outside
-  if (gridToCheck[y][x] === 0) return positionsToFlip; // Reached an empty position
-  if (gridToCheck[y][x] !== player)
-    positionsToFlip = [...positionsToFlip, ...getPositionsThatCanFlip(gridToCheck, player, { x, y }, translate)];
+  if (x < 0 || y < 0 || x > 7 || y > 7) return; // Went outside
+  if (gridToCheck[y][x] === 0) return; // Reached an empty position
+  if (gridToCheck[thisPosition.y][thisPosition.x] === player && gridToCheck[y][x] === player) return; // Two consecutive for player
+  if (gridToCheck[y][x] !== player) {
+    const foundEnemy = getPositionsThatCanFlip(gridToCheck, player, { x, y }, translate);
+    if (foundEnemy) positionsToFlip = positionsToFlip.concat({ x, y }, ...foundEnemy);
+  }
   if (
-    gridToCheck[thisPosition.y][thisPosition.x] !== player && // Current position should the opposite player
-    gridToCheck[y][x] === player // Next position is the player
+    gridToCheck[thisPosition.y][thisPosition.x] !== 0 && // Current position should not be empty
+    gridToCheck[thisPosition.y][thisPosition.x] !== player && // and it should be the opposite player
+    gridToCheck[y][x] === player // and next position is the player
   ) {
-    return [{ x: thisPosition.x, y: thisPosition.y }]; // Found the enemy, flip all previous
+    return []; // Found the enemy, collect coordinates
   }
 
-  return positionsToFlip;
+  if (positionsToFlip.length > 0) return positionsToFlip;
 };
 
 const createErrorResponse = (e: Error) => createResponse(`Error: ${e.message}. Player ${nextPlayer} move again.`);
