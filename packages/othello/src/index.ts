@@ -39,14 +39,8 @@ export const initGame = (initGrid = defaultGrid()): GameResponse => {
 };
 
 const getAvailableMoves = (player: Player) => {
-  const positionsWhereCanPlay = getEmptyAdjacentCoordinates(grid).reduce(
-    (remainingPositions: Coordinates[], positionToCheck) => {
-      if (couldFlip(player, positionToCheck)) {
-        remainingPositions.push(positionToCheck);
-      }
-      return remainingPositions;
-    },
-    []
+  const positionsWhereCanPlay = getEmptyAdjacentCoordinates(grid).filter((positionToCheck) =>
+    couldFlip(player, positionToCheck)
   );
   if (positionsWhereCanPlay.length === 0) throw Error(`No available moves.`);
   return positionsWhereCanPlay;
