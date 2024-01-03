@@ -30,7 +30,7 @@ let nextPlayer: Player = 1;
 let nextPossibleMoves: Coordinates[];
 
 const togglePlayer = () => {
-  nextPlayer = nextPlayer === 1 ? 2 : 1;
+  return (nextPlayer = nextPlayer === 1 ? 2 : 1);
 };
 
 export const initGame = (initGrid = defaultGrid()): GameResponse => {
@@ -56,16 +56,22 @@ export const playerMove = (player: Player, { x, y }: Coordinates): GameResponse 
     togglePlayer();
   } catch (e) {
     if (e instanceof Error) response = createErrorResponse(e);
-  } finally {
-    // Find, if there are available moves for next player
+  }
+  // Find, if there are available moves for next player
+  try {
+    nextPossibleMoves = getAvailableMoves(nextPlayer);
+  } catch (e) {
+    // If the next player can't move, toggle player back to original
+    togglePlayer();
     try {
       nextPossibleMoves = getAvailableMoves(nextPlayer);
-    } catch (e) {
-      // If this player can't move, toggle player
-      togglePlayer();
-      // TODO If also this player can't move, the game is over & announce winner
-      nextPossibleMoves = getAvailableMoves(nextPlayer);
       if (e instanceof Error) response = createErrorResponse(e);
+    } catch (e) {
+      // If also the original player can't move, the game is over & announce winner
+      const { player1, player2 } = countFinal();
+      response = createResponse(
+        `Game over. Winner is player ${togglePlayer()}. Player 1: ${player1}. Player 2: ${player2}.`
+      );
     }
   }
 
@@ -246,6 +252,18 @@ const getPositionsThatCanFlip = (
   }
 
   if (positionsToFlip.length > 0) return positionsToFlip;
+};
+
+const countFinal = (): { player1: number; player2: number } => {
+  let player1 = 0;
+  let player2 = 0;
+  grid.forEach((row) => {
+    row.forEach((cell) => {
+      if (cell === 1) player1++;
+      if (cell === 2) player2++;
+    });
+  });
+  return { player1, player2 };
 };
 
 const createErrorResponse = (e: Error) => createResponse(`Error: ${e.message}. Player ${nextPlayer} move again.`);
