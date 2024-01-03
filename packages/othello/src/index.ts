@@ -35,6 +35,8 @@ const togglePlayer = () => {
 
 export const initGame = (initGrid = defaultGrid()): GameResponse => {
   grid = initGrid;
+  nextPlayer = 1;
+  nextPossibleMoves = [];
   return createResponse("Waiting for the first move.");
 };
 
