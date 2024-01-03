@@ -59,7 +59,7 @@ export const playerMove = (player: Player, { x, y }: Coordinates): GameResponse 
     doFlips(player, { x, y });
     togglePlayer();
   } catch (e) {
-    if (e instanceof Error) response = createResponse(`Error: ${e.message}. Player ${nextPlayer} move again.`);
+    if (e instanceof Error) response = createErrorResponse(e);
   } finally {
     // Find, if there are available moves for next player
     try {
@@ -69,10 +69,9 @@ export const playerMove = (player: Player, { x, y }: Coordinates): GameResponse 
       togglePlayer();
       // TODO If also this player can't move, the game is over & announce winner
       nextPossibleMoves = getAvailableMoves(nextPlayer);
-      if (e instanceof Error) response = createResponse(`Error: ${e.message}. Player ${nextPlayer} move again.`);
+      if (e instanceof Error) response = createErrorResponse(e);
     }
   }
-
 
   return response || createResponse("Next move.");
 };
@@ -257,5 +256,7 @@ const getPositionsThatCanFlip = (
 
   return positionsToFlip;
 };
+
+const createErrorResponse = (e: Error) => createResponse(`Error: ${e.message}. Player ${nextPlayer} move again.`);
 
 const createResponse = (msg: string): GameResponse => ({ grid, nextPlayer, nextPossibleMoves, msg });
