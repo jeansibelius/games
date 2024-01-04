@@ -4,12 +4,12 @@ Collection of small games written for fun.
 The games are written as packages that can be wrapped by an API.
 (Game control logic is left to the API/UI.)
 
-Currently available is a CLI interface to play the games.
+Currently available is a [CLI interface](./packages/cli) to play the games.
 
 ## Currently supported games
 
-- Tic-Tac-Toe (`./packages/tic-tac-toe`)
-- Othello (`./packages/othello`)
+- Tic-Tac-Toe [`./packages/tic-tac-toe`](./packages/tic-tac-toe)
+- Othello [`./packages/othello`](./packages/othello)
 
 ## Playing
 
