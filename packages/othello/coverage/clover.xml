@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<coverage generated="1704361189166" clover="3.2.0">
-  <project timestamp="1704361189166" name="All files">
+<coverage generated="1704362759893" clover="3.2.0">
+  <project timestamp="1704362759893" name="All files">
     <metrics statements="275" coveredstatements="275" conditionals="77" coveredconditionals="74" methods="14" coveredmethods="14" elements="366" coveredelements="363" complexity="0" loc="275" ncloc="275" packages="1" files="1" classes="1"/>
     <file name="index.ts" path="/Users/rafael/personal/games/packages/othello/src/index.ts">
       <metrics statements="275" coveredstatements="275" conditionals="77" coveredconditionals="74" methods="14" coveredmethods="14"/>
