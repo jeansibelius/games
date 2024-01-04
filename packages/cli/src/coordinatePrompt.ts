@@ -22,7 +22,6 @@ export const coordinatePrompt: Prompt<Coordinates, CoordinatePromptConfig> = cre
   useKeypress((key) => {
     if (isEnterKey(key)) {
       const answer = coordinates;
-      //setCoordinates(coordinates);
       done(answer);
     } else if (isUpKey(key)) {
       setCoordinates({ ...coordinates, y: coordinates.y === 0 ? 2 : coordinates.y-- });
