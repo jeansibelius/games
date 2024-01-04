@@ -82,31 +82,6 @@ describe("Playing Othello", () => {
       expect(msg).toBeTruthy();
     });
 
-    describe("if one tries to overwrite an existing move", () => {
-      const currentPlayer = 2;
-      let followingGrid: number[][];
-      let followingNextPlayer: number;
-      let followingMsg: string;
-      beforeEach(() => {
-        const { grid: newGrid, nextPlayer: newPreviousPlayer, msg: newMsg } = playerMove(currentPlayer, latestMove);
-        followingGrid = newGrid;
-        followingNextPlayer = newPreviousPlayer;
-        followingMsg = newMsg;
-      });
-
-      test("the grid is returned unchaged", () => {
-        expect(followingGrid).toStrictEqual(grid);
-      });
-
-      test("the next player value is unchaged", () => {
-        expect(followingNextPlayer).toBe(nextPlayer);
-      });
-
-      test("a helpful error message is returned", () => {
-        expect(followingMsg).toContain("Choose another position");
-      });
-    });
-
     describe("when making a subsequent move", () => {
       const latestMove = { x: 5, y: 2 };
       let grid: number[][];
@@ -141,6 +116,40 @@ describe("Playing Othello", () => {
           { x: 3, y: 5 },
         ]);
       });
+    });
+  });
+
+  describe("when one tries to overwrite an existing move", () => {
+    let grid: number[][];
+    let nextPlayer: 1 | 2;
+    const moveThatWouldOverwrite = { x: 3, y: 3 };
+    let followingGrid: number[][];
+    let followingNextPlayer: number;
+    let followingMsg: string;
+    beforeEach(() => {
+      const { nextPlayer: initNextPlayer, grid: initGrid } = initGame();
+      nextPlayer = initNextPlayer;
+      grid = initGrid;
+      const {
+        grid: newGrid,
+        nextPlayer: newPreviousPlayer,
+        msg: newMsg,
+      } = playerMove(nextPlayer, moveThatWouldOverwrite);
+      followingGrid = newGrid;
+      followingNextPlayer = newPreviousPlayer;
+      followingMsg = newMsg;
+    });
+
+    test("the grid is returned unchaged", () => {
+      expect(followingGrid).toStrictEqual(grid);
+    });
+
+    test("the next player value is unchaged", () => {
+      expect(followingNextPlayer).toBe(nextPlayer);
+    });
+
+    test("a helpful error message is returned", () => {
+      expect(followingMsg).toContain("Choose another position");
     });
   });
 
