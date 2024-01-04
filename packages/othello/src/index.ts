@@ -40,14 +40,6 @@ export const initGame = (initGrid = defaultGrid()): GameResponse => {
   return createResponse("Waiting for the first move.");
 };
 
-const getAvailableMoves = (player: Player) => {
-  const positionsWhereCanPlay = getEmptyAdjacentCoordinates(grid).filter((positionToCheck) =>
-    couldFlip(player, positionToCheck)
-  );
-  if (positionsWhereCanPlay.length === 0) throw Error(`No available moves.`);
-  return positionsWhereCanPlay;
-};
-
 export const playerMove = (player: Player, { x, y }: Coordinates): GameResponse => {
   let response: GameResponse | undefined;
   try {
@@ -199,6 +191,14 @@ const checkAndMark = (
     }
   }
   return recordOfCoordinates;
+};
+
+const getAvailableMoves = (player: Player) => {
+  const positionsWhereCanPlay = getEmptyAdjacentCoordinates(grid).filter((positionToCheck) =>
+    couldFlip(player, positionToCheck)
+  );
+  if (positionsWhereCanPlay.length === 0) throw Error(`No available moves.`);
+  return positionsWhereCanPlay;
 };
 
 const coordinateDirections = [
