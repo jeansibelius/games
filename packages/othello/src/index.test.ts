@@ -149,7 +149,8 @@ describe("Playing Othello", () => {
     });
 
     test("a helpful error message is returned", () => {
-      expect(followingMsg).toContain("Choose another position");
+      expect(followingMsg).toContain("Can't place there");
+      expect(followingMsg).toContain(`Player ${followingNextPlayer} move again.`);
     });
   });
 
@@ -184,7 +185,7 @@ describe("Playing Othello", () => {
     });
 
     test("a helpful error message is returned", () => {
-      expect(followingMsg).toContain("Choose a position inside the grid");
+      expect(followingMsg).toContain("Can't place there");
       expect(followingMsg).toContain(`Player ${followingNextPlayer} move again.`);
     });
   });

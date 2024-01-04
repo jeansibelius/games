@@ -36,15 +36,17 @@ const togglePlayer = () => {
 export const initGame = (initGrid = defaultGrid()): GameResponse => {
   grid = initGrid;
   nextPlayer = 1;
-  nextPossibleMoves = [];
+  nextPossibleMoves = getAvailableMoves(nextPlayer);
   return createResponse("Waiting for the first move.");
 };
 
-export const playerMove = (player: Player, { x, y }: Coordinates): GameResponse => {
+export const playerMove = (player: Player, move: Coordinates): GameResponse => {
   let response: GameResponse | undefined;
   try {
-    setMoveToGrid(player, { x, y });
-    doFlips(player, { x, y });
+    if (nextPossibleMoves.filter((possibleMove) => possibleMove.x === move.x && possibleMove.y === move.y).length === 0)
+      throw Error("Can't place there. Try again");
+    setMoveToGrid(player, move);
+    doFlips(player, move);
     togglePlayer();
   } catch (e) {
     if (e instanceof Error) response = createErrorResponse(e);
@@ -61,6 +63,7 @@ export const playerMove = (player: Player, { x, y }: Coordinates): GameResponse 
     } catch (e) {
       // If also the original player can't move, the game is over & announce winner
       togglePlayer();
+      nextPossibleMoves = [];
       const result = countFinal();
       response = createResponse(`Game over. ${result}`);
     }
