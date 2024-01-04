@@ -1,10 +1,10 @@
 import pc from "picocolors";
 import { coordinatePrompt } from "./coordinatePrompt.js";
 import { addLeftPadding, getLeftPaddingToCenter } from "./utils.js";
-import { initGame, playerMove } from "tic-tac-toe";
-export class TicTacToe {
-    #gameTitle = "  Tic-Tac-Toe  ";
-    #move = { x: 1, y: 1 };
+import { initGame, playerMove } from "othello";
+export class Othello {
+    #gameTitle = "  Othello  ";
+    #move = { x: 3, y: 3 };
     #latestMove;
     constructor() {
         this.#latestMove = initGame();
@@ -31,18 +31,20 @@ export class TicTacToe {
     };
     #renderGrid = () => {
         const gridTemplate = [
-            " y/x    0     1     2        ", // 0: Index row
-            "      _________________      ", // 1: Grid top edge
-            "     |     |     |     |     ", // 2: Sign row top padding
-            "  Y  |  X  |  X  |  X  |     ", // 3: Sign row
-            "     |_____|_____|_____|     ", // 4: Row top & bottom
+            " y/x    0     1     2     3     4     5     6     7        ", // 0: Index row
+            "      _______________________________________________      ", // 1: Grid top edge
+            "     |     |     |     |     |     |     |     |     |     ", // 2: Sign row top padding
+            "  Y  |  X  |  X  |  X  |  X  |  X  |  X  |  X  |  X  |     ", // 3: Sign row
+            "     |_____|_____|_____|_____|_____|_____|_____|_____|     ", // 4: Row top & bottom
         ];
         this.#latestMove.grid.forEach((row, rowNum) => {
             let signRow = gridTemplate[3].replace("Y", pc.dim(String(rowNum)));
             row.forEach((colValue, colNum) => {
                 let value = colValue > 0 ? String(colValue) : " ";
                 if (this.#move.y === rowNum && this.#move.x === colNum) {
-                    const cellColor = value === " " ? pc.bgGreen : pc.bgRed;
+                    const canPlace = value === " " &&
+                        this.#latestMove.nextPossibleMoves.filter(({ x, y }) => x === colNum && y === rowNum).length === 1;
+                    const cellColor = canPlace ? pc.bgGreen : pc.bgRed;
                     value = cellColor(value);
                 }
                 signRow = signRow.replace("X", value);

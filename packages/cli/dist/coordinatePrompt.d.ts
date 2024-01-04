@@ -6,6 +6,7 @@ interface Coordinates {
 interface CoordinatePromptConfig {
     message: string;
     default: string;
+    grid: unknown[][];
     updateCoordinatesCallback: (coordinates: Coordinates) => Coordinates;
 }
 export declare const coordinatePrompt: Prompt<Coordinates, CoordinatePromptConfig>;

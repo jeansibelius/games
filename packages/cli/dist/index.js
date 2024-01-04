@@ -1,9 +1,10 @@
 import { select } from "@inquirer/prompts";
 import pc from "picocolors";
 import { TicTacToe } from "./cliTicTacToe.js";
+import { Othello } from "./cliOthello.js";
 const gameChoices = [
     { value: 1, name: "Tic-Tac-Toe" },
-    { value: 2, name: `Reversi ${pc.gray("(coming soon)")}`, disabled: true },
+    { value: 2, name: "Othello" },
 ];
 const main = async () => {
     console.clear();
@@ -15,6 +16,9 @@ const main = async () => {
     switch (gameChoice) {
         case 1:
             await new TicTacToe().play();
+            break;
+        case 2:
+            await new Othello().play();
             break;
     }
     console.log("Thanks for playing!");
