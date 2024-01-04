@@ -82,37 +82,6 @@ describe("Playing Othello", () => {
       expect(msg).toBeTruthy();
     });
 
-    const outsideMoves = [
-      { x: -1, y: 2 },
-      { x: 8, y: 2 },
-      { x: 1, y: -1 },
-      { x: 0, y: 8 },
-    ];
-    describe.each(outsideMoves)("if one makes a move outside the grid", (outsideMove) => {
-      let followingGrid: number[][];
-      let followingNextPlayer: number;
-      let followingMsg: string;
-      beforeAll(() => {
-        const { grid: newGrid, nextPlayer: newNextPlayer, msg: newMsg } = playerMove(nextPlayer, outsideMove);
-        followingGrid = newGrid;
-        followingNextPlayer = newNextPlayer;
-        followingMsg = newMsg;
-      });
-
-      test("the grid is returned unchaged", () => {
-        expect(followingGrid).toStrictEqual(grid);
-      });
-
-      test("the next player value is unchanged", () => {
-        expect(followingNextPlayer).toBe(nextPlayer);
-      });
-
-      test("a helpful error message is returned", () => {
-        expect(followingMsg).toContain("Choose a position inside the grid");
-        expect(followingMsg).toContain(`Player ${followingNextPlayer} move again.`);
-      });
-    });
-
     describe("if one tries to overwrite an existing move", () => {
       const currentPlayer = 2;
       let followingGrid: number[][];
@@ -172,6 +141,42 @@ describe("Playing Othello", () => {
           { x: 3, y: 5 },
         ]);
       });
+    });
+  });
+
+  const outsideMoves = [
+    { x: -1, y: 2 },
+    { x: 8, y: 2 },
+    { x: 1, y: -1 },
+    { x: 0, y: 8 },
+  ];
+  describe.each(outsideMoves)("when one makes a move outside the grid", (outsideMove) => {
+    let nextPlayer: 1 | 2;
+    let grid: number[][];
+    let followingGrid: number[][];
+    let followingNextPlayer: number;
+    let followingMsg: string;
+    beforeAll(() => {
+      const { nextPlayer: initNextPlayer, grid: initGrid } = initGame();
+      nextPlayer = initNextPlayer;
+      grid = initGrid;
+      const { grid: newGrid, nextPlayer: newNextPlayer, msg: newMsg } = playerMove(nextPlayer, outsideMove);
+      followingGrid = newGrid;
+      followingNextPlayer = newNextPlayer;
+      followingMsg = newMsg;
+    });
+
+    test("the grid is returned unchaged", () => {
+      expect(followingGrid).toStrictEqual(grid);
+    });
+
+    test("the next player value is unchanged", () => {
+      expect(followingNextPlayer).toBe(nextPlayer);
+    });
+
+    test("a helpful error message is returned", () => {
+      expect(followingMsg).toContain("Choose a position inside the grid");
+      expect(followingMsg).toContain(`Player ${followingNextPlayer} move again.`);
     });
   });
 
