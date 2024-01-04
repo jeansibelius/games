@@ -11,5 +11,5 @@ export interface GameResponse {
 }
 declare let grid: number[][];
 export declare const initGame: (initGrid?: number[][]) => GameResponse;
-export declare const playerMove: (player: Player, { x, y }: Coordinates) => GameResponse;
+export declare const playerMove: (player: Player, move: Coordinates) => GameResponse;
 export {};
