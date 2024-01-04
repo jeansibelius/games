@@ -60,10 +60,9 @@ export const playerMove = (player: Player, { x, y }: Coordinates): GameResponse 
       if (e instanceof Error) response = createErrorResponse(e);
     } catch (e) {
       // If also the original player can't move, the game is over & announce winner
-      const { player1, player2 } = countFinal();
-      response = createResponse(
-        `Game over. Winner is player ${togglePlayer()}. Player 1: ${player1}. Player 2: ${player2}.`
-      );
+      togglePlayer();
+      const result = countFinal();
+      response = createResponse(`Game over. ${result}`);
     }
   }
 
@@ -254,7 +253,7 @@ const getPositionsThatCanFlip = (
   if (positionsToFlip.length > 0) return positionsToFlip;
 };
 
-const countFinal = (): { player1: number; player2: number } => {
+const countFinal = () => {
   let player1 = 0;
   let player2 = 0;
   grid.forEach((row) => {
@@ -263,7 +262,9 @@ const countFinal = (): { player1: number; player2: number } => {
       if (cell === 2) player2++;
     });
   });
-  return { player1, player2 };
+  return `${
+    player1 === player2 ? "It's a tie" : `Winner is player ${player1 > player2 ? "1" : "2"}`
+  }. Player 1: ${player1}. Player 2: ${player2}.`;
 };
 
 const createErrorResponse = (e: Error) => createResponse(`Error: ${e.message}. Player ${nextPlayer} move again.`);
