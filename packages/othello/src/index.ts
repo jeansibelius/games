@@ -270,6 +270,6 @@ const countFinal = () => {
   }. Player 1: ${player1}. Player 2: ${player2}.`;
 };
 
-const createErrorResponse = (e: Error) => createResponse(`Error: ${e.message}. Player ${nextPlayer} move again.`);
+const createErrorResponse = (e: Error) => createResponse(`Error: ${e.message} Player ${nextPlayer} move again.`);
 
 const createResponse = (msg: string): GameResponse => ({ grid, nextPlayer, nextPossibleMoves, msg });
