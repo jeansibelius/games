@@ -31,6 +31,7 @@
     "@inquirer/core": "^5.1.1",
     "@inquirer/prompts": "^3.3.0",
     "tic-tac-toe": "workspace:*",
+    "othello": "workspace:*",
     "picocolors": "^1.0.0"
   }
 }

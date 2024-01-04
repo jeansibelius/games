@@ -44,6 +44,9 @@ importers:
       '@inquirer/prompts':
         specifier: ^3.3.0
         version: 3.3.0
+      othello:
+        specifier: workspace:*
+        version: link:../othello
       picocolors:
         specifier: ^1.0.0
         version: 1.0.0
