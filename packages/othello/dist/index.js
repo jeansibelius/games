@@ -47,8 +47,9 @@ export const playerMove = (player, { x, y }) => {
         }
         catch (e) {
             // If also the original player can't move, the game is over & announce winner
-            const { player1, player2 } = countFinal();
-            response = createResponse(`Game over. Winner is player ${togglePlayer()}. Player 1: ${player1}. Player 2: ${player2}.`);
+            togglePlayer();
+            const result = countFinal();
+            response = createResponse(`Game over. ${result}`);
         }
     }
     return response || createResponse("Next move.");
@@ -232,7 +233,7 @@ const countFinal = () => {
                 player2++;
         });
     });
-    return { player1, player2 };
+    return `${player1 === player2 ? "It's a tie" : `Winner is player ${player1 > player2 ? "1" : "2"}`}. Player 1: ${player1}. Player 2: ${player2}.`;
 };
 const createErrorResponse = (e) => createResponse(`Error: ${e.message}. Player ${nextPlayer} move again.`);
 const createResponse = (msg) => ({ grid, nextPlayer, nextPossibleMoves, msg });
