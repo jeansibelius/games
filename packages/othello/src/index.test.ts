@@ -82,7 +82,7 @@ describe("Playing Othello", () => {
       expect(msg).toBeTruthy();
     });
 
-    describe("when making a subsequent move", () => {
+    describe("and when making a subsequent move", () => {
       const latestMove = { x: 5, y: 2 };
       let grid: number[][];
       let nextNextPossibleMoves: (typeof latestMove)[];
