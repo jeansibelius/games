@@ -250,59 +250,61 @@ describe("Playing Othello", () => {
   });
 
   describe("when the next move is the last possible move", () => {
-    const gridToInitialise = [
-      // x 0, 1, 2, 3, 4, 5, 6, 7
-      [2, 2, 2, 2, 2, 2, 2, 2], // y 0
-      [2, 2, 2, 1, 1, 1, 2, 2], // y 1
-      [2, 2, 1, 2, 2, 1, 2, 2], // y 2
-      [2, 2, 2, 1, 2, 1, 2, 2], // y 3
-      [2, 2, 2, 2, 1, 1, 2, 2], // y 4
-      [2, 2, 2, 1, 1, 1, 2, 2], // y 5
-      [2, 2, 2, 1, 2, 2, 2, 2], // y 6
-      [2, 2, 0, 1, 2, 2, 2, 2], // y 7
-    ];
-    const currentPlayer = 2;
-    const nextMove = { x: 2, y: 7 };
-    let newGrid: number[][];
-    let newNextPlayer: 1 | 2;
-    let newNextPossibleMoves: (typeof nextMove)[];
-    let newMsg: string;
-    beforeAll(() => {
-      initGame(gridToInitialise);
-      const { grid, nextPlayer, nextPossibleMoves, msg } = playerMove(currentPlayer, nextMove);
-      newGrid = grid;
-      newNextPlayer = nextPlayer;
-      newNextPossibleMoves = nextPossibleMoves;
-      newMsg = msg;
-    });
-
-    test("the grid with the latest move is returned", () => {
-      const fullGrid = [
+    describe("and there is a winner", () => {
+      const gridToInitialise = [
         // x 0, 1, 2, 3, 4, 5, 6, 7
-        [2, 2, 2, 2, 2, 2, 2, 2], // y 0 2: 8, 1: 0
-        [2, 2, 2, 1, 1, 1, 2, 2], // y 1 2: 5, 1: 3
-        [2, 2, 1, 2, 2, 1, 2, 2], // y 2 2: 6, 1: 2
-        [2, 2, 2, 1, 2, 1, 2, 2], // y 3 2: 6, 1: 2
-        [2, 2, 2, 2, 1, 2, 2, 2], // y 4 2: 7, 1: 1
-        [2, 2, 2, 1, 2, 1, 2, 2], // y 5 2: 6, 1: 2
-        [2, 2, 2, 2, 2, 2, 2, 2], // y 6 2: 8, 1: 0
-        [2, 2, 2, 2, 2, 2, 2, 2], // y 7 2: 8, 1: 0
+        [2, 2, 2, 2, 2, 2, 2, 2], // y 0
+        [2, 2, 2, 1, 1, 1, 2, 2], // y 1
+        [2, 2, 1, 2, 2, 1, 2, 2], // y 2
+        [2, 2, 2, 1, 2, 1, 2, 2], // y 3
+        [2, 2, 2, 2, 1, 1, 2, 2], // y 4
+        [2, 2, 2, 1, 1, 1, 2, 2], // y 5
+        [2, 2, 2, 1, 2, 2, 2, 2], // y 6
+        [2, 2, 0, 1, 2, 2, 2, 2], // y 7
       ];
-      expect(newGrid).toStrictEqual(fullGrid);
-    });
+      const currentPlayer = 2;
+      const nextMove = { x: 2, y: 7 };
+      let newGrid: number[][];
+      let newNextPlayer: 1 | 2;
+      let newNextPossibleMoves: (typeof nextMove)[];
+      let newMsg: string;
+      beforeAll(() => {
+        initGame(gridToInitialise);
+        const { grid, nextPlayer, nextPossibleMoves, msg } = playerMove(currentPlayer, nextMove);
+        newGrid = grid;
+        newNextPlayer = nextPlayer;
+        newNextPossibleMoves = nextPossibleMoves;
+        newMsg = msg;
+      });
 
-    test("a message with 'game over' and 'winner' is shown", () => {
-      expect(newMsg).toContain("Game over");
-      expect(newMsg).toContain(`Winner is player ${currentPlayer}.`);
-      expect(newMsg).toContain(`Player 1: 10. Player 2: 54.`);
-    });
+      test("the grid with the latest move is returned", () => {
+        const fullGrid = [
+          // x 0, 1, 2, 3, 4, 5, 6, 7
+          [2, 2, 2, 2, 2, 2, 2, 2], // y 0 2: 8, 1: 0
+          [2, 2, 2, 1, 1, 1, 2, 2], // y 1 2: 5, 1: 3
+          [2, 2, 1, 2, 2, 1, 2, 2], // y 2 2: 6, 1: 2
+          [2, 2, 2, 1, 2, 1, 2, 2], // y 3 2: 6, 1: 2
+          [2, 2, 2, 2, 1, 2, 2, 2], // y 4 2: 7, 1: 1
+          [2, 2, 2, 1, 2, 1, 2, 2], // y 5 2: 6, 1: 2
+          [2, 2, 2, 2, 2, 2, 2, 2], // y 6 2: 8, 1: 0
+          [2, 2, 2, 2, 2, 2, 2, 2], // y 7 2: 8, 1: 0
+        ];
+        expect(newGrid).toStrictEqual(fullGrid);
+      });
 
-    test("the next player value is the one who made the latest move", () => {
-      expect(newNextPlayer).toBe(currentPlayer);
-    });
+      test("a message with 'game over' and 'winner' is shown", () => {
+        expect(newMsg).toContain("Game over");
+        expect(newMsg).toContain(`Winner is player ${currentPlayer}.`);
+        expect(newMsg).toContain(`Player 1: 10. Player 2: 54.`);
+      });
 
-    test("there are no next possible moves", () => {
-      expect(newNextPossibleMoves).toStrictEqual([]);
+      test("the next player value is the one who made the latest move", () => {
+        expect(newNextPlayer).toBe(currentPlayer);
+      });
+
+      test("there are no next possible moves", () => {
+        expect(newNextPossibleMoves).toStrictEqual([]);
+      });
     });
   });
 });
