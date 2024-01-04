@@ -32,6 +32,7 @@ export class TicTacToe {
     await coordinatePrompt({
       message: "coordinates",
       default: JSON.stringify(this.#move),
+      grid: this.#latestMove.grid,
       updateCoordinatesCallback: (coordinates: Coordinates) => {
         this.#move = coordinates;
         this.renderMove();

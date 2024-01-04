@@ -9,6 +9,7 @@ interface Coordinates {
 interface CoordinatePromptConfig {
   message: string;
   default: string;
+  grid: unknown[][];
   updateCoordinatesCallback: (coordinates: Coordinates) => Coordinates;
 }
 
@@ -18,19 +19,21 @@ export const coordinatePrompt: Prompt<Coordinates, CoordinatePromptConfig> = cre
 >((config, done) => {
   const parsedCoordinates = JSON.parse(config.default) as Coordinates;
   const [coordinates, setCoordinates] = useState(parsedCoordinates);
+  const width = config.grid[0].length - 1;
+  const height = config.grid.length - 1;
 
   useKeypress((key) => {
     if (isEnterKey(key)) {
       const answer = coordinates;
       done(answer);
     } else if (isUpKey(key)) {
-      setCoordinates({ ...coordinates, y: coordinates.y === 0 ? 2 : coordinates.y-- });
+      setCoordinates({ ...coordinates, y: coordinates.y === 0 ? height : coordinates.y-- });
     } else if (isDownKey(key)) {
-      setCoordinates({ ...coordinates, y: coordinates.y === 2 ? 0 : coordinates.y++ });
+      setCoordinates({ ...coordinates, y: coordinates.y === height ? 0 : coordinates.y++ });
     } else if (isLeftKey(key)) {
-      setCoordinates({ ...coordinates, x: coordinates.x === 0 ? 2 : coordinates.x-- });
+      setCoordinates({ ...coordinates, x: coordinates.x === 0 ? width : coordinates.x-- });
     } else if (isRightKey(key)) {
-      setCoordinates({ ...coordinates, x: coordinates.x === 2 ? 0 : coordinates.x++ });
+      setCoordinates({ ...coordinates, x: coordinates.x === width ? 0 : coordinates.x++ });
     }
     setCoordinates(config.updateCoordinatesCallback(coordinates));
   });
