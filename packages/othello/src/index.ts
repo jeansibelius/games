@@ -8,8 +8,8 @@ type Coordinates = {
 export interface GameResponse {
   grid: typeof grid;
   gameOver: typeof gameOver;
-  nextPlayer: Player;
-  nextPossibleMoves: Coordinates[];
+  nextPlayer: typeof nextPlayer;
+  nextPossibleMoves: typeof nextPossibleMoves;
   points: typeof points;
   msg: string;
 }
