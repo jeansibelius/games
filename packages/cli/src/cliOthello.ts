@@ -41,6 +41,8 @@ export class Othello {
     });
   };
 
+  #getPlayerSign = (value: number) => (value === 1 ? "○" : value === 2 ? "●" : " ");
+
   #renderGrid = () => {
     const gridTemplate = [
       " y/x    0     1     2     3     4     5     6     7        ", // 0: Index row
@@ -53,7 +55,7 @@ export class Othello {
     this.#latestMove.grid.forEach((row, rowNum) => {
       let signRow = gridTemplate[3].replace("Y", pc.dim(String(rowNum)));
       row.forEach((colValue, colNum) => {
-        let value = colValue > 0 ? String(colValue) : " ";
+        let value = this.#getPlayerSign(colValue);
         if (this.#move.y === rowNum && this.#move.x === colNum) {
           const canPlace =
             value === " " &&
@@ -84,10 +86,20 @@ export class Othello {
 
     this.#renderGrid();
 
-    const NextMoveMsg = `\n${addLeftPadding(this.#latestMove.msg, getLeftPaddingToCenter(this.#latestMove.msg))}\n`;
-    console.log(NextMoveMsg);
+    let nextMoveMsg = `\n${addLeftPadding(this.#latestMove.msg, getLeftPaddingToCenter(this.#latestMove.msg))}\n`;
+    const playerStrings = [...this.#latestMove.msg.matchAll(/player ([12]{1})/gi)];
+    if (playerStrings && playerStrings.length > 0) {
+      playerStrings.forEach(
+        (playerString) =>
+          (nextMoveMsg = nextMoveMsg.replaceAll(
+            playerString[0],
+            `Player ${this.#getPlayerSign(Number(playerString[1]))}`
+          ))
+      );
+    }
+    console.log(nextMoveMsg);
 
-    const nextPlayerMsg = `Your turn, player ${this.#latestMove.nextPlayer}`;
+    const nextPlayerMsg = `Your turn, player ${this.#getPlayerSign(this.#latestMove.nextPlayer)}`;
     !this.#latestMove.msg.includes("Winner") &&
       console.log(`\n${addLeftPadding(nextPlayerMsg, getLeftPaddingToCenter(nextPlayerMsg, this.#gameTitle))}\n`);
 
