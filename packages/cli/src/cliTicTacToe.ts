@@ -41,6 +41,8 @@ export class TicTacToe {
     });
   };
 
+  #getPlayerSign = (value: number) => (value === 1 ? "𝜲" : value === 2 ? "𝜪" : " ");
+
   #renderGrid = () => {
     const gridTemplate = [
       " y/x    0     1     2        ", // 0: Index row
@@ -53,7 +55,7 @@ export class TicTacToe {
     this.#latestMove.grid.forEach((row, rowNum) => {
       let signRow = gridTemplate[3].replace("Y", pc.dim(String(rowNum)));
       row.forEach((colValue, colNum) => {
-        let value = colValue > 0 ? String(colValue) : " ";
+        let value = this.#getPlayerSign(colValue);
         if (this.#move.y === rowNum && this.#move.x === colNum) {
           const cellColor = value === " " ? pc.bgGreen : pc.bgRed;
           value = cellColor(value);
@@ -81,10 +83,15 @@ export class TicTacToe {
 
     this.#renderGrid();
 
-    const NextMoveMsg = `\n${addLeftPadding(this.#latestMove.msg, getLeftPaddingToCenter(this.#latestMove.msg))}\n`;
+    const player = this.#latestMove.msg.match(/[12]{1}/g);
+    const msgWithCorrectPlayerSign = this.#latestMove.msg.replaceAll(/[12]{1}/g, this.#getPlayerSign(Number(player)));
+    const NextMoveMsg = `\n${addLeftPadding(
+      msgWithCorrectPlayerSign,
+      getLeftPaddingToCenter(msgWithCorrectPlayerSign)
+    )}\n`;
     console.log(NextMoveMsg);
 
-    const nextPlayerMsg = `Your turn, player ${this.#latestMove.nextPlayer}`;
+    const nextPlayerMsg = `Your turn, player ${this.#getPlayerSign(this.#latestMove.nextPlayer)}`;
     !this.#latestMove.msg.includes("Winner") &&
       console.log(`\n${addLeftPadding(nextPlayerMsg, getLeftPaddingToCenter(nextPlayerMsg, this.#gameTitle))}\n`);
 
