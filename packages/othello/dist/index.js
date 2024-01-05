@@ -238,5 +238,5 @@ const countFinal = () => {
     });
     return `${player1 === player2 ? "It's a tie" : `Winner is player ${player1 > player2 ? "1" : "2"}`}. Player 1: ${player1}. Player 2: ${player2}.`;
 };
-const createErrorResponse = (e) => createResponse(`Error: ${e.message}. Player ${nextPlayer} move again.`);
+const createErrorResponse = (e) => createResponse(`Error: ${e.message} Player ${nextPlayer} move again.`);
 const createResponse = (msg) => ({ grid, nextPlayer, nextPossibleMoves, msg });
