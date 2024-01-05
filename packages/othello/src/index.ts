@@ -7,6 +7,7 @@ type Coordinates = {
 
 export interface GameResponse {
   grid: typeof grid;
+  gameOver: typeof gameOver;
   nextPlayer: Player;
   nextPossibleMoves: Coordinates[];
   msg: string;
@@ -26,6 +27,7 @@ const defaultGrid = () => [
 
 // Game state
 let grid: number[][];
+let gameOver = false;
 let nextPlayer: Player = 1;
 let nextPossibleMoves: Coordinates[];
 
@@ -35,6 +37,7 @@ const togglePlayer = () => {
 
 export const initGame = (initGrid = defaultGrid()): GameResponse => {
   grid = initGrid;
+  gameOver = false;
   nextPlayer = 1;
   nextPossibleMoves = getAvailableMoves(nextPlayer);
   return createResponse("Waiting for the first move.");
@@ -62,6 +65,7 @@ export const playerMove = (player: Player, move: Coordinates): GameResponse => {
       if (e instanceof Error) response = createErrorResponse(e);
     } catch (e) {
       // If also the original player can't move, the game is over & announce winner
+      gameOver = true;
       togglePlayer();
       nextPossibleMoves = [];
       const finalMsg = finalMessage();
@@ -280,4 +284,4 @@ const finalMessage = () => {
 
 const createErrorResponse = (e: Error) => createResponse(`Error: ${e.message} Player ${nextPlayer} move again.`);
 
-const createResponse = (msg: string): GameResponse => ({ grid, nextPlayer, nextPossibleMoves, msg });
+const createResponse = (msg: string): GameResponse => ({ grid, gameOver, nextPlayer, nextPossibleMoves, msg });

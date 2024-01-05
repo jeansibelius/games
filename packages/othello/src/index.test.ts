@@ -24,6 +24,11 @@ describe("Playing Othello", () => {
       expect(nextPlayer).toBe(1);
     });
 
+    test("the game is not over", () => {
+      const { gameOver } = initGame();
+      expect(gameOver).toBe(false);
+    });
+
     test("a message is shown", () => {
       const { msg } = initGame();
       expect(msg).toBeTruthy();
@@ -206,12 +211,14 @@ describe("Playing Othello", () => {
     const nextMove = { x: 4, y: 4 };
     let newGrid: number[][];
     let newNextPlayer: 1 | 2;
+    let newGameOver: boolean;
     let newNextPossibleMoves: (typeof nextMove)[];
     let newMsg: string;
     beforeAll(() => {
       initGame(gridToInitialise);
-      const { grid, nextPlayer, nextPossibleMoves, msg } = playerMove(currentPlayer, nextMove);
+      const { grid, gameOver, nextPlayer, nextPossibleMoves, msg } = playerMove(currentPlayer, nextMove);
       newGrid = grid;
+      newGameOver = gameOver;
       newNextPlayer = nextPlayer;
       newNextPossibleMoves = nextPossibleMoves;
       newMsg = msg;
@@ -241,6 +248,10 @@ describe("Playing Othello", () => {
       expect(newNextPlayer).toBe(currentPlayer);
     });
 
+    test("the game is not over", () => {
+      expect(newGameOver).toBe(false);
+    });
+
     test("the next possible moves are correct", () => {
       expect(newNextPossibleMoves).toStrictEqual([
         { x: 2, y: 4 },
@@ -266,13 +277,15 @@ describe("Playing Othello", () => {
       const currentPlayer = 2;
       const nextMove = { x: 2, y: 7 };
       let newGrid: number[][];
+      let newGameOver: boolean;
       let newNextPlayer: 1 | 2;
       let newNextPossibleMoves: (typeof nextMove)[];
       let newMsg: string;
       beforeAll(() => {
         initGame(gridToInitialise);
-        const { grid, nextPlayer, nextPossibleMoves, msg } = playerMove(currentPlayer, nextMove);
+        const { grid, gameOver, nextPlayer, nextPossibleMoves, msg } = playerMove(currentPlayer, nextMove);
         newGrid = grid;
+        newGameOver = gameOver;
         newNextPlayer = nextPlayer;
         newNextPossibleMoves = nextPossibleMoves;
         newMsg = msg;
@@ -291,6 +304,10 @@ describe("Playing Othello", () => {
           [2, 2, 2, 2, 2, 2, 2, 2], // y 7 2: 8, 1: 0
         ];
         expect(newGrid).toStrictEqual(fullGrid);
+      });
+
+      test("the game is over", () => {
+        expect(newGameOver).toBe(true);
       });
 
       test("a message with 'game over' and 'winner' is shown", () => {
@@ -323,13 +340,15 @@ describe("Playing Othello", () => {
       const currentPlayer = 2;
       const nextMove = { x: 2, y: 7 };
       let newGrid: number[][];
+      let newGameOver: boolean;
       let newNextPlayer: 1 | 2;
       let newNextPossibleMoves: (typeof nextMove)[];
       let newMsg: string;
       beforeAll(() => {
         initGame(gridToInitialise);
-        const { grid, nextPlayer, nextPossibleMoves, msg } = playerMove(currentPlayer, nextMove);
+        const { grid, gameOver, nextPlayer, nextPossibleMoves, msg } = playerMove(currentPlayer, nextMove);
         newGrid = grid;
+        newGameOver = gameOver;
         newNextPlayer = nextPlayer;
         newNextPossibleMoves = nextPossibleMoves;
         newMsg = msg;
@@ -348,6 +367,10 @@ describe("Playing Othello", () => {
           [2, 2, 2, 2, 1, 1, 1, 1], // y 7
         ];
         expect(newGrid).toStrictEqual(fullGrid);
+      });
+
+      test("the game is over", () => {
+        expect(newGameOver).toBe(true);
       });
 
       test("a message with 'game over' and 'tie' is shown", () => {
