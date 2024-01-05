@@ -10,6 +10,7 @@ export interface GameResponse {
   gameOver: typeof gameOver;
   nextPlayer: Player;
   nextPossibleMoves: Coordinates[];
+  points: typeof points;
   msg: string;
 }
 
@@ -30,6 +31,7 @@ let grid: number[][];
 let gameOver = false;
 let nextPlayer: Player = 1;
 let nextPossibleMoves: Coordinates[];
+let points: Record<Player, number>;
 
 const togglePlayer = () => {
   return (nextPlayer = nextPlayer === 1 ? 2 : 1);
@@ -40,6 +42,7 @@ export const initGame = (initGrid = defaultGrid()): GameResponse => {
   gameOver = false;
   nextPlayer = 1;
   nextPossibleMoves = getAvailableMoves(nextPlayer);
+  points = countPoints();
   return createResponse("Waiting for the first move.");
 };
 
@@ -50,6 +53,7 @@ export const playerMove = (player: Player, move: Coordinates): GameResponse => {
       throw Error("Can't place there.");
     setMoveToGrid(player, move);
     doFlips(player, move);
+    countPoints();
     togglePlayer();
   } catch (e) {
     if (e instanceof Error) response = createErrorResponse(e);
@@ -269,10 +273,10 @@ const countPoints = () => {
       if (cell === 2) player2++;
     });
   });
-  return {
+  return (points = {
     1: player1,
     2: player2,
-  };
+  });
 };
 
 const finalMessage = () => {
@@ -284,4 +288,4 @@ const finalMessage = () => {
 
 const createErrorResponse = (e: Error) => createResponse(`Error: ${e.message} Player ${nextPlayer} move again.`);
 
-const createResponse = (msg: string): GameResponse => ({ grid, gameOver, nextPlayer, nextPossibleMoves, msg });
+const createResponse = (msg: string): GameResponse => ({ grid, gameOver, nextPlayer, nextPossibleMoves, points, msg });
