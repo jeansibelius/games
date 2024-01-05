@@ -4,7 +4,7 @@ const terminalSize = {
 };
 
 export const addLeftPadding = (str: string, leftPadding: number) => {
-  return " ".repeat(leftPadding).concat(str);
+  return leftPadding > 0 ? " ".repeat(leftPadding).concat(str) : str;
 };
 
 export const getLeftPaddingToCenter = (str: string, centerBy?: string) => {
