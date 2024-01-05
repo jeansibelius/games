@@ -44,7 +44,7 @@ export const playerMove = (player: Player, move: Coordinates): GameResponse => {
   let response: GameResponse | undefined;
   try {
     if (nextPossibleMoves.filter((possibleMove) => possibleMove.x === move.x && possibleMove.y === move.y).length === 0)
-      throw Error("Can't place there. Try again");
+      throw Error("Can't place there.");
     setMoveToGrid(player, move);
     doFlips(player, move);
     togglePlayer();
