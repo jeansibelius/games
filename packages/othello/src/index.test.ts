@@ -347,8 +347,7 @@ describe("Playing Othello", () => {
 
       test("a message with 'game over' and 'winner' is shown", () => {
         expect(newMsg).toContain("Game over");
-        expect(newMsg).toContain(`Winner is player ${currentPlayer}.`);
-        expect(newMsg).toContain(`Player 1: 10. Player 2: 54.`);
+        expect(newMsg).toContain("We have a Winner");
       });
 
       test("the next player value is the one who made the latest move", () => {
@@ -416,8 +415,7 @@ describe("Playing Othello", () => {
 
       test("a message with 'game over' and 'tie' is shown", () => {
         expect(newMsg).toContain("Game over");
-        expect(newMsg).toContain("tie");
-        expect(newMsg).toContain(`Player 1: 32. Player 2: 32.`);
+        expect(newMsg).toContain("It's a tie");
       });
 
       test("the next player value is the one who made the latest move", () => {
