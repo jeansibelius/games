@@ -86,7 +86,7 @@ export class Othello {
 
     this.#renderGrid();
 
-    let nextMoveMsg = `\n${addLeftPadding(this.#latestMove.msg, getLeftPaddingToCenter(this.#latestMove.msg))}\n`;
+    let nextMoveMsg = `\n${addLeftPadding(this.#latestMove.msg, getLeftPaddingToCenter(this.#latestMove.msg))}`;
     const playerStrings = [...this.#latestMove.msg.matchAll(/player ([12]{1})/gi)];
     if (playerStrings && playerStrings.length > 0) {
       playerStrings.forEach(
