@@ -58,7 +58,7 @@ export const playerMove = (player, move) => {
             togglePlayer();
             nextPossibleMoves = [];
             const finalMsg = finalMessage();
-            response = createResponse(`Game over. ${finalMsg}`);
+            response = createResponse(`${finalMsg}. Game over.`);
         }
     }
     return response || createResponse("Next move.");

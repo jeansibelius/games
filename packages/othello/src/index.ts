@@ -73,7 +73,7 @@ export const playerMove = (player: Player, move: Coordinates): GameResponse => {
       togglePlayer();
       nextPossibleMoves = [];
       const finalMsg = finalMessage();
-      response = createResponse(`Game over. ${finalMsg}`);
+      response = createResponse(`${finalMsg}. Game over.`);
     }
   }
 
