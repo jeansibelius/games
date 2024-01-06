@@ -99,9 +99,10 @@ export class Othello {
     }
     console.log(nextMoveMsg);
 
-    const nextPlayerMsg = `Your turn, player ${this.#getPlayerSign(this.#latestMove.nextPlayer)}`;
-    !this.#latestMove.msg.includes("Winner") &&
-      console.log(`\n${addLeftPadding(nextPlayerMsg, getLeftPaddingToCenter(nextPlayerMsg, this.#gameTitle))}\n`);
+    const pointSituation = `Points: ${Object.entries(this.#latestMove.points)
+      .map((player) => `${this.#getPlayerSign(Number(player[0]))}: ${String(player[1])}`)
+      .join(", ")}`;
+    console.log(pc.gray(`\n${addLeftPadding(pointSituation, getLeftPaddingToCenter(pointSituation))}\n`));
 
     return this.#latestMove;
   };
