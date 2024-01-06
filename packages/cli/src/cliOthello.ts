@@ -86,14 +86,17 @@ export class Othello {
 
     this.#renderGrid();
 
-    const nextPlayerMsg = `${this.#getPlayerSign(this.#latestMove.nextPlayer)}'s turn`;
-    console.log(`\n${addLeftPadding(nextPlayerMsg, getLeftPaddingToCenter(nextPlayerMsg))}`);
+    if (!this.#latestMove.gameOver) {
+      const nextPlayerMsg = `${this.#getPlayerSign(this.#latestMove.nextPlayer)}'s turn`;
+      console.log(`\n${addLeftPadding(nextPlayerMsg, getLeftPaddingToCenter(nextPlayerMsg))}`);
+    }
     console.log(`\n${addLeftPadding(this.#latestMove.msg, getLeftPaddingToCenter(this.#latestMove.msg))}`);
 
     const pointSituation = `Points: ${Object.entries(this.#latestMove.points)
       .map((player) => `${this.#getPlayerSign(Number(player[0]))}: ${String(player[1])}`)
       .join(", ")}`;
-    console.log(pc.gray(`\n${addLeftPadding(pointSituation, getLeftPaddingToCenter(pointSituation))}\n`));
+    const pointsColor = this.#latestMove.gameOver ? pc.green : pc.gray;
+    console.log(pointsColor(`\n${addLeftPadding(pointSituation, getLeftPaddingToCenter(pointSituation))}\n`));
 
     return this.#latestMove;
   };
