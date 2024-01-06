@@ -11,15 +11,19 @@ const defaultGrid = () => [
 ];
 // Game state
 let grid;
+let gameOver = false;
 let nextPlayer = 1;
 let nextPossibleMoves;
+let points;
 const togglePlayer = () => {
     return (nextPlayer = nextPlayer === 1 ? 2 : 1);
 };
 export const initGame = (initGrid = defaultGrid()) => {
     grid = initGrid;
+    gameOver = false;
     nextPlayer = 1;
     nextPossibleMoves = getAvailableMoves(nextPlayer);
+    points = countPoints();
     return createResponse("Waiting for the first move.");
 };
 export const playerMove = (player, move) => {
@@ -29,6 +33,7 @@ export const playerMove = (player, move) => {
             throw Error("Can't place there.");
         setMoveToGrid(player, move);
         doFlips(player, move);
+        countPoints();
         togglePlayer();
     }
     catch (e) {
@@ -49,10 +54,11 @@ export const playerMove = (player, move) => {
         }
         catch (e) {
             // If also the original player can't move, the game is over & announce winner
+            gameOver = true;
             togglePlayer();
             nextPossibleMoves = [];
-            const result = countFinal();
-            response = createResponse(`Game over. ${result}`);
+            const finalMsg = finalMessage();
+            response = createResponse(`Game over. ${finalMsg}`);
         }
     }
     return response || createResponse("Next move.");
@@ -74,7 +80,7 @@ const getEmptyAdjacentCoordinates = (grid) => {
                 { x: colNum + 1, y: rowNum + 1 }, // Bottom-right
                 { x: colNum - 1, y: rowNum + 1 }, // Bottom-left
             ];
-            adjacentCoordinatesToCheck.forEach((coordinates) => (outline = checkAndMark(grid, col, { x: colNum, y: rowNum }, coordinates, outline)));
+            adjacentCoordinatesToCheck.forEach((coordinates) => (outline = checkAndRecordIfNextToNonEmpty(grid, col, { x: colNum, y: rowNum }, coordinates, outline)));
         });
     });
     return Array.from(outline.values());
@@ -152,22 +158,21 @@ if (import.meta.vitest) {
         });
     });
 }
-const checkAndMark = (grid, currentCellValue, currentCoordinates, adjacentCoordinates, recordOfCoordinates) => {
+const checkAndRecordIfNextToNonEmpty = (grid, currentCellValue, currentCoordinates, adjacentCoordinates, recordOfCoordinates) => {
     const { x, y } = adjacentCoordinates;
-    if (x >= 0 && y >= 0 && x < 8 && y < 8) {
+    if (x >= 0 && y >= 0 && x < grid[0].length && y < grid.length) {
         const nextCellValue = grid[y][x];
+        let coordinatesToRecord = undefined;
         if (currentCellValue === 0 && nextCellValue !== 0) {
-            // If current is 0,
-            // mark, if next is non-0
-            const coordinatesToSet = { x: currentCoordinates.x, y: currentCoordinates.y };
-            recordOfCoordinates.set(`${coordinatesToSet.x},${coordinatesToSet.y}`, coordinatesToSet);
+            // If current is 0, mark, if next is non-0
+            coordinatesToRecord = { x: currentCoordinates.x, y: currentCoordinates.y };
         }
         else if (currentCellValue !== 0 && nextCellValue === 0) {
-            // Else (current is non-0),
-            // mark, if next is 0
-            const coordinatesToSet = { x, y };
-            recordOfCoordinates.set(`${coordinatesToSet.x},${coordinatesToSet.y}`, coordinatesToSet);
+            // Else (current is non-0), mark, if next is 0
+            coordinatesToRecord = { x, y };
         }
+        if (coordinatesToRecord)
+            recordOfCoordinates.set(`${coordinatesToRecord.x},${coordinatesToRecord.y}`, coordinatesToRecord);
     }
     return recordOfCoordinates;
 };
@@ -225,7 +230,7 @@ const getPositionsThatCanFlip = (gridToCheck, player, thisPosition, translate, p
     if (positionsToFlip.length > 0)
         return positionsToFlip;
 };
-const countFinal = () => {
+const countPoints = () => {
     let player1 = 0;
     let player2 = 0;
     grid.forEach((row) => {
@@ -236,7 +241,14 @@ const countFinal = () => {
                 player2++;
         });
     });
+    return (points = {
+        1: player1,
+        2: player2,
+    });
+};
+const finalMessage = () => {
+    const { 1: player1, 2: player2 } = countPoints();
     return `${player1 === player2 ? "It's a tie" : `Winner is player ${player1 > player2 ? "1" : "2"}`}. Player 1: ${player1}. Player 2: ${player2}.`;
 };
 const createErrorResponse = (e) => createResponse(`Error: ${e.message} Player ${nextPlayer} move again.`);
-const createResponse = (msg) => ({ grid, nextPlayer, nextPossibleMoves, msg });
+const createResponse = (msg) => ({ grid, gameOver, nextPlayer, nextPossibleMoves, points, msg });
