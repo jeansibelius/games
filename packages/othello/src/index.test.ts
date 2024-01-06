@@ -378,14 +378,16 @@ describe("Playing Othello", () => {
       let newGameOver: boolean;
       let newNextPlayer: 1 | 2;
       let newNextPossibleMoves: (typeof nextMove)[];
+      let newPoints: Record<typeof newNextPlayer, number>;
       let newMsg: string;
       beforeAll(() => {
         initGame(gridToInitialise);
-        const { grid, gameOver, nextPlayer, nextPossibleMoves, msg } = playerMove(currentPlayer, nextMove);
+        const { grid, gameOver, nextPlayer, nextPossibleMoves, points, msg } = playerMove(currentPlayer, nextMove);
         newGrid = grid;
         newGameOver = gameOver;
         newNextPlayer = nextPlayer;
         newNextPossibleMoves = nextPossibleMoves;
+        newPoints = points;
         newMsg = msg;
       });
 
@@ -406,6 +408,10 @@ describe("Playing Othello", () => {
 
       test("the game is over", () => {
         expect(newGameOver).toBe(true);
+      });
+
+      test("the points are correct", () => {
+        expect(newPoints).toStrictEqual({ 1: 32, 2: 32 });
       });
 
       test("a message with 'game over' and 'tie' is shown", () => {
