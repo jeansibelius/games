@@ -171,7 +171,6 @@ describe("Playing Othello", () => {
 
     test("a helpful error message is returned", () => {
       expect(followingMsg).toContain("Can't place there");
-      expect(followingMsg).toContain(`Player ${followingNextPlayer} move again.`);
     });
   });
 
@@ -220,7 +219,6 @@ describe("Playing Othello", () => {
 
     test("a helpful error message is returned", () => {
       expect(followingMsg).toContain("Can't place there");
-      expect(followingMsg).toContain(`Player ${followingNextPlayer} move again.`);
     });
   });
 
@@ -270,7 +268,6 @@ describe("Playing Othello", () => {
 
     test("a message with 'no available moves' is shown", () => {
       expect(newMsg).toContain("No available moves.");
-      expect(newMsg).toContain(`Player ${currentPlayer} move again.`);
     });
 
     test("the next player value is the one who made the latest move", () => {

@@ -284,6 +284,6 @@ const finalMessage = () => {
   return `${player1 === player2 ? "It's a tie" : "We have a Winner"}`;
 };
 
-const createErrorResponse = (e: Error) => createResponse(`Error: ${e.message} Player ${nextPlayer} move again.`);
+const createErrorResponse = (e: Error) => createResponse(`Error: ${e.message}`);
 
 const createResponse = (msg: string): GameResponse => ({ grid, gameOver, nextPlayer, nextPossibleMoves, points, msg });
