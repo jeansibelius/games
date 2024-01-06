@@ -21,7 +21,7 @@ export class Othello {
   }
 
   play = async () => {
-    while (!this.#latestMove.msg.includes("Winner") && !this.#latestMove.msg.includes("Tie")) {
+    while (!this.#latestMove.gameOver) {
       await this.#makeMove();
       this.#latestMove = playerMove(this.#latestMove.nextPlayer, this.#move);
       this.renderMove();
