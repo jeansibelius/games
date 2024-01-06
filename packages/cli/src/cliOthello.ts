@@ -86,18 +86,9 @@ export class Othello {
 
     this.#renderGrid();
 
-    let nextMoveMsg = `\n${addLeftPadding(this.#latestMove.msg, getLeftPaddingToCenter(this.#latestMove.msg))}`;
-    const playerStrings = [...this.#latestMove.msg.matchAll(/player ([12]{1})/gi)];
-    if (playerStrings && playerStrings.length > 0) {
-      playerStrings.forEach(
-        (playerString) =>
-          (nextMoveMsg = nextMoveMsg.replaceAll(
-            playerString[0],
-            `Player ${this.#getPlayerSign(Number(playerString[1]))}`
-          ))
-      );
-    }
-    console.log(nextMoveMsg);
+    const nextPlayerMsg = `${this.#getPlayerSign(this.#latestMove.nextPlayer)}'s turn`;
+    console.log(`\n${addLeftPadding(nextPlayerMsg, getLeftPaddingToCenter(nextPlayerMsg))}`);
+    console.log(`\n${addLeftPadding(this.#latestMove.msg, getLeftPaddingToCenter(this.#latestMove.msg))}`);
 
     const pointSituation = `Points: ${Object.entries(this.#latestMove.points)
       .map((player) => `${this.#getPlayerSign(Number(player[0]))}: ${String(player[1])}`)
