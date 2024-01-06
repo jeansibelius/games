@@ -97,7 +97,8 @@ const getEmptyAdjacentCoordinates = (grid: number[][]): Coordinates[] => {
         { x: colNum - 1, y: rowNum + 1 }, // Bottom-left
       ];
       adjacentCoordinatesToCheck.forEach(
-        (coordinates) => (outline = checkAndMark(grid, col, { x: colNum, y: rowNum }, coordinates, outline))
+        (coordinates) =>
+          (outline = checkAndRecordIfNextToNonEmpty(grid, col, { x: colNum, y: rowNum }, coordinates, outline))
       );
     });
   });
@@ -178,7 +179,7 @@ if (import.meta.vitest) {
   });
 }
 
-const checkAndMark = (
+const checkAndRecordIfNextToNonEmpty = (
   grid: number[][],
   currentCellValue: number,
   currentCoordinates: Coordinates,
@@ -186,19 +187,18 @@ const checkAndMark = (
   recordOfCoordinates: Map<string, Coordinates>
 ) => {
   const { x, y } = adjacentCoordinates;
-  if (x >= 0 && y >= 0 && x < 8 && y < 8) {
+  if (x >= 0 && y >= 0 && x < grid[0].length && y < grid.length) {
     const nextCellValue = grid[y][x];
+    let coordinatesToRecord: Coordinates | undefined = undefined;
     if (currentCellValue === 0 && nextCellValue !== 0) {
-      // If current is 0,
-      // mark, if next is non-0
-      const coordinatesToSet = { x: currentCoordinates.x, y: currentCoordinates.y };
-      recordOfCoordinates.set(`${coordinatesToSet.x},${coordinatesToSet.y}`, coordinatesToSet);
+      // If current is 0, mark, if next is non-0
+      coordinatesToRecord = { x: currentCoordinates.x, y: currentCoordinates.y };
     } else if (currentCellValue !== 0 && nextCellValue === 0) {
-      // Else (current is non-0),
-      // mark, if next is 0
-      const coordinatesToSet = { x, y };
-      recordOfCoordinates.set(`${coordinatesToSet.x},${coordinatesToSet.y}`, coordinatesToSet);
+      // Else (current is non-0), mark, if next is 0
+      coordinatesToRecord = { x, y };
     }
+    if (coordinatesToRecord)
+      recordOfCoordinates.set(`${coordinatesToRecord.x},${coordinatesToRecord.y}`, coordinatesToRecord);
   }
   return recordOfCoordinates;
 };
