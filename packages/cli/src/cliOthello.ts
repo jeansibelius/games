@@ -26,6 +26,7 @@ export class Othello {
       this.#latestMove = playerMove(this.#latestMove.nextPlayer, this.#move);
       this.renderMove();
     }
+    this.renderMove(); // TODO Render on game over with colored backgrounds?
   };
 
   #makeMove = async (): Promise<void> => {
@@ -60,7 +61,9 @@ export class Othello {
           const canPlace =
             value === " " &&
             this.#latestMove.nextPossibleMoves.filter(({ x, y }) => x === colNum && y === rowNum).length === 1;
-          const cellColor = canPlace ? pc.bgGreen : pc.bgRed;
+          let cellColor = canPlace ? pc.bgGreen : pc.bgRed;
+          if (this.#latestMove.gameOver)
+            cellColor = colValue === 1 ? pc.bgBlack : colValue === 2 ? pc.bgWhite : pc.reset;
           value = cellColor(value);
         }
         signRow = signRow.replace("X", value);
